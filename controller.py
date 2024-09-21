@@ -27,3 +27,4 @@ class AppController:
         # Botão C
         button_c = ctk.CTkButton(button_frame, text="C", width=100, height=100, corner_radius=15)
         button_c.grid(row=0, column=2, padx=20)
+# l
