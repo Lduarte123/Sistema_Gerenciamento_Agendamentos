@@ -12,5 +12,5 @@ class App(ctk.CTk):
         self.controller = AppController(self)
 
 if __name__ == "__main__":
-    app = App()
+    app = App() 
     app.mainloop()
