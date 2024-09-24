@@ -20,6 +20,8 @@ class CriarAgendamento:
         janela_criar = ctk.CTkToplevel(self.parent)
         janela_criar.title("Criar Agendamento")
         janela_criar.geometry("700x500")
+        
+        janela_criar.grab_set()
 
         label_nome = ctk.CTkLabel(janela_criar, text="Nome do Evento:")
         label_nome.pack(pady=10)
@@ -36,6 +38,7 @@ class CriarAgendamento:
         botao_salvar = ctk.CTkButton(janela_criar, text="Salvar", command=lambda: self.salvar_agendamento(entrada_nome))
         botao_salvar.pack(pady=20)
 
+        janela_criar.focus_force()
         
 
     def salvar_agendamento(self, entrada_nome):
