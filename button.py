@@ -39,18 +39,6 @@ class ButtonFrame:
         )
         self.button_b.grid(row=0, column=1, padx=20)
 
-        # Botão Cancelar com imagem
-        self.button_c = ctk.CTkButton(
-            self.frame, 
-            text="Cancelar", 
-            image=self.imagem_cancelar, 
-            compound="top", 
-            width=120, 
-            height=120, 
-            corner_radius=15, 
-            command=self.action_c
-        )
-        self.button_c.grid(row=0, column=2, padx=20)
 
     def carregar_imagem(self, caminho, tamanho):
         """Carrega e redimensiona a imagem."""
