@@ -46,10 +46,5 @@ class ButtonFrame:
         imagem = imagem.resize(tamanho)  # Redimensiona a imagem
         return ImageTk.PhotoImage(imagem)  # Retorna a imagem no formato correto
 
-    def action_a(self):
-        print("Agendar foi pressionado")
-
-    def action_b(self):
-        print("Visualizar foi pressionado")
 
 
