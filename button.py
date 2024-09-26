@@ -1,15 +1,15 @@
 import customtkinter as ctk
-from PIL import Image, ImageTk  # Importa a biblioteca para manipulação de imagens
+from PIL import Image, ImageTk 
 
 class ButtonFrame:
     def __init__(self, master):
         self.master = master
-        self.frame = ctk.CTkFrame(self.master)  # Define largura e altura do frame
+        self.frame = ctk.CTkFrame(self.master, fg_color="transparent")  # Define largura e altura do frame
         self.frame.pack(pady=50)
         self.frame.pack_propagate(False)  # Impede que o frame ajuste seu tamanho automaticamente
 
         # Carregar e redimensionar imagens
-        self.imagem_agendar = self.carregar_imagem("assets/image_c.png", (80, 80))  # Redimensiona para 80x80 pixels
+        self.imagem_agendar = self.carregar_imagem("assets/image_c.png", (80, 80))
         self.imagem_visualizar = self.carregar_imagem("assets/image_v.png", (80, 80))
         self.imagem_cancelar = self.carregar_imagem("assets/image_x.png", (80, 80))
 
@@ -18,7 +18,7 @@ class ButtonFrame:
             self.frame, 
             text="Agendar", 
             image=self.imagem_agendar, 
-            compound="top",  # Coloca o texto abaixo da imagem
+            compound="top",  
             width=120, 
             height=120, 
             corner_radius=15, 
@@ -52,6 +52,4 @@ class ButtonFrame:
     def action_b(self):
         print("Visualizar foi pressionado")
 
-    def action_c(self):
-        print("Cancelar foi pressionado")
 
