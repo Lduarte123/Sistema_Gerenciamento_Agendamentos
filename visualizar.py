@@ -20,7 +20,6 @@ class Visualizar:
 
         self.janela_visualizar.grab_set()
 
-        # Criação da Treeview para a tabela
         self.tree = ttk.Treeview(self.janela_visualizar, columns=("codigo", "nome", "data", "local"), show='headings')
         self.tree.heading("codigo", text="Código")
         self.tree.heading("nome", text="Nome")
@@ -33,19 +32,16 @@ class Visualizar:
         self.tree.column("data", width=150)
         self.tree.column("local", width=150)
 
-        # Adiciona agendamentos à Treeview
         self.atualizar_tabela()
 
         self.tree.pack(pady=20, fill="both", expand=True)
 
-        # Botões de Editar e Excluir
         botao_editar = ctk.CTkButton(self.janela_visualizar, text="Editar", command=self.editar_agendamento)
         botao_editar.pack(side="left", padx=(20, 10), pady=20)
 
         botao_excluir = ctk.CTkButton(self.janela_visualizar, text="Excluir", command=self.excluir_agendamento)
         botao_excluir.pack(side="right", padx=(10, 20), pady=20)
 
-        # Botão para fechar a janela
         botao_fechar = ctk.CTkButton(self.janela_visualizar, text="Fechar", command=self.janela_visualizar.destroy)
         botao_fechar.pack(pady=20)
 
@@ -54,7 +50,6 @@ class Visualizar:
         for item in self.tree.get_children():
             self.tree.delete(item)
 
-        # Adiciona os agendamentos à Treeview
         for agendamento in self.agendamentos:
             self.tree.insert("", "end", values=(agendamento.codigo, agendamento.nome, agendamento.data, agendamento.local))
 
@@ -68,7 +63,6 @@ class Visualizar:
             data = item_values[2]
             local = item_values[3]
 
-            # Abre a janela personalizada para edição
             self.janela_editar(codigo, nome, data, local)
         else:
             messagebox.showwarning("Seleção Inválida", "Selecione um agendamento para editar.")
@@ -114,18 +108,17 @@ class Visualizar:
                     break
             self.atualizar_tabela()  # Atualiza a tabela
             messagebox.showinfo("Sucesso", "Agendamento editado com sucesso!")
-            janela.destroy()  # Fecha a janela de edição
+            janela.destroy() 
         else:
             messagebox.showwarning("Erro", "Nome e data não podem estar vazios.")
 
     def excluir_agendamento(self):
-        # Obtém o item selecionado
         itemSelecionado = self.tree.selection()
+        # Pega o item selecionado
         if itemSelecionado:
             valoresItens = self.tree.item(itemSelecionado, 'values')
             codigo = int(valoresItens[0])  # Certifique-se de que o código é um inteiro
 
-            # Tenta encontrar e remover o agendamento correspondente
             agendamento_encontrado = None
             for agendamento in self.agendamentos:
                 if agendamento.codigo == codigo:
@@ -134,7 +127,7 @@ class Visualizar:
 
             if agendamento_encontrado:
                 self.agendamentos.remove(agendamento_encontrado)  # Remove da lista
-                self.tree.delete(itemSelecionado)  # Remove o item da Treeview
+                self.tree.delete(itemSelecionado)  
                 messagebox.showinfo("Excluir Agendamento", "Agendamento excluído com sucesso!")
             else:
                 messagebox.showwarning("Erro", "Agendamento não encontrado.")

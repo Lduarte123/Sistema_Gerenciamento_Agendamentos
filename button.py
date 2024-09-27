@@ -45,6 +45,12 @@ class ButtonFrame:
         imagem = Image.open(caminho)  # Carrega a imagem
         imagem = imagem.resize(tamanho)  # Redimensiona a imagem
         return ImageTk.PhotoImage(imagem)  # Retorna a imagem no formato correto
+    
+    def action_a():
+        print("Botão a pressionado")
+
+    def action_b():
+        print("Botão b pressionado")
 
 
 
