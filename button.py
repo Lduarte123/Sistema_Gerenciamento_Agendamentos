@@ -4,11 +4,11 @@ from PIL import Image, ImageTk
 class ButtonFrame:
     def __init__(self, master):
         self.master = master
-        self.frame = ctk.CTkFrame(self.master, fg_color="transparent")  # Define largura e altura do frame
+        self.frame = ctk.CTkFrame(self.master, fg_color="transparent")
         self.frame.pack(pady=50)
         self.frame.pack_propagate(False)  # Impede que o frame ajuste seu tamanho automaticamente
 
-        # Carregar e redimensionar imagens
+        # Carrega as imagens
         self.imagem_agendar = self.carregar_imagem("assets/image_c.png", (80, 80))
         self.imagem_visualizar = self.carregar_imagem("assets/image_v.png", (80, 80))
         self.imagem_cancelar = self.carregar_imagem("assets/image_x.png", (80, 80))
@@ -45,6 +45,15 @@ class ButtonFrame:
         imagem = Image.open(caminho)  # Carrega a imagem
         imagem = imagem.resize(tamanho)  # Redimensiona a imagem
         return ImageTk.PhotoImage(imagem)  # Retorna a imagem no formato correto
+    
+    def action_a():
+        print("Botão Agendar pressionado")
+    
+    def action_b():
+        print("Botão Visualizar pressionado")
+
+
+        
 
 
 

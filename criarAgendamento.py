@@ -4,11 +4,12 @@ from tkcalendar import Calendar
 from agendamentos import Agendamento
 import re  # Para validação do horário
 from datetime import datetime
+
 class CriarAgendamento:
     def __init__(self, parent, agendamentos):
         self.parent = parent
         self.agendamentos = agendamentos
-        self.janela_criar = None  # Inicializa a janela como None
+        self.janela_criar = None 
         self.abrir_janela_criar()
 
     def abrir_janela_criar(self):
@@ -16,29 +17,35 @@ class CriarAgendamento:
         self.janela_criar.title("Criar Agendamento")
         self.janela_criar.geometry("600x500")
         
-        self.janela_criar.grab_set()
+        self.janela_criar.attributes("-topmost", True)
 
         frameCriarAgendamento = ctk.CTkFrame(self.janela_criar, fg_color='transparent')
         frameCriarAgendamento.pack(pady=30)
 
-        # Nome do Evento
+        # Nome
         label_nome = ctk.CTkLabel(frameCriarAgendamento, text="Nome do Evento:")
         label_nome.grid(row=0, column=0, padx=(0, 10), pady=(0, 10), sticky='w')
 
         self.entrada_nome = ctk.CTkEntry(frameCriarAgendamento, width=200)
         self.entrada_nome.grid(row=0, column=1, pady=(0, 10), sticky='ew')
 
-        # Data do Evento
+        # Data
         label_data = ctk.CTkLabel(self.janela_criar, text="Data do Evento:")
         label_data.pack(pady=(10, 0))
 
-        # Estilizando o calendário
+        dia_atual = datetime.now()
+
+        getDia  = dia_atual.day
+        getMes = dia_atual.month
+        getAno = dia_atual.year
+
+        # Calendario
         self.calendario = Calendar(
             self.janela_criar,
             selectmode='day',
-            year=2024,
-            month=9,
-            day=25,
+            year=getAno,
+            month=getMes,
+            day=getDia,
             background='#145DA0', 
             locale='pt_BR',
             foreground='white',
@@ -66,15 +73,12 @@ class CriarAgendamento:
         self.entrada_local = ctk.CTkEntry(frameCriarAgendamento, placeholder_text="Opcional", width=200)
         self.entrada_local.grid(row=2, column=1, pady=(0, 10), sticky='ew')
 
-        # Botão para salvar o agendamento
         botao_salvar = ctk.CTkButton(self.janela_criar, text="Salvar", command=self.salvar_agendamento)
         botao_salvar.pack(pady=20)
 
-        # Botão para fechar a janela
         botao_fechar = ctk.CTkButton(self.janela_criar, text="Fechar", command=self.janela_criar.destroy)
         botao_fechar.pack(pady=5)
 
-        self.janela_criar.focus_force()
 
     def salvar_agendamento(self):
         nome = self.entrada_nome.get()
@@ -87,24 +91,28 @@ class CriarAgendamento:
             messagebox.showerror("Erro", "Horário deve ser no formato HH:MM.")
             return
 
-        # Formatar a data e hora
-        data_hora_str = f"{data} {horario}"
-        data_hora_agendamento = datetime.strptime(data_hora_str, "%d/%m/%Y %H:%M")
-
         # Obter data e hora atuais
         data_hora_atual = datetime.now()
 
-        # Verificar se a data e hora do agendamento são anteriores à data e hora atuais
-        if data_hora_agendamento < data_hora_atual:
-            messagebox.showerror("Erro", "A data e o horário selecionados já passaram.")
+        # Separando a validação da data e do horário
+        data_agendamento = datetime.strptime(data, "%d/%m/%Y")
+        hora_agendamento = datetime.strptime(horario, "%H:%M").time()
+
+        # Verificar se a data do agendamento é anterior à data atual
+        if data_agendamento.date() < data_hora_atual.date():
+            messagebox.showerror("Erro", "A data selecionada já passou.")
+            return
+
+        # Verificar se o horário é anterior ao horário atual se for no mesmo dia
+        if data_agendamento.date() == data_hora_atual.date() and hora_agendamento < data_hora_atual.time():
+            messagebox.showerror("Erro", "O horário selecionado já passou.")
             return
 
         if nome and data and horario:
-            agendamento = Agendamento(nome, data_hora_str, local)  # Armazenando a data e hora
+            # Não precisa mais concatenar a data e o horário, eles são tratados separadamente
+            agendamento = Agendamento(nome, data, horario, local)
             self.agendamentos.append(agendamento)
-            messagebox.showinfo("Sucesso", f"Agendamento criado! Código: {agendamento.codigo}\n{agendamento.nome}\nLocal: {agendamento.local}\nHorário: {agendamento.data}")
-
-
+            messagebox.showinfo("Sucesso", f"Agendamento criado! Código: {agendamento.codigo}\n{agendamento.nome}\nLocal: {agendamento.local}\nData: {agendamento.data}\nHorário: {agendamento.horario}")
             self.janela_criar.destroy()  # Fecha a janela
             return
         
