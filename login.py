@@ -42,3 +42,6 @@ botao_criar_conta.pack(pady=(15, 20))  # Espaçamento melhorado
 
 # Iniciar o loop da interface
 app.mainloop()
+
+
+#que ódio
