@@ -35,17 +35,13 @@ class CriarAgendamento:
 
         dia_atual = datetime.now()
 
-        getDia  = dia_atual.day
-        getMes = dia_atual.month
-        getAno = dia_atual.year
-
         # Calendario
         self.calendario = Calendar(
             self.janela_criar,
             selectmode='day',
-            year=getAno,
-            month=getMes,
-            day=getDia,
+            year=dia_atual.year,
+            month=dia_atual.month,
+            day=dia_atual.day,
             background='#145DA0', 
             locale='pt_BR',
             foreground='white',
