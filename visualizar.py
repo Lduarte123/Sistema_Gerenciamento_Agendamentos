@@ -40,7 +40,7 @@ class Visualizar:
         botao_editar = ctk.CTkButton(self.janela_visualizar, text="Editar", command=self.editar_agendamento)
         botao_editar.pack(side="left", padx=(20, 10), pady=20)
 
-        botao_excluir = ctk.CTkButton(self.janela_visualizar, text="Excluir", command=self.excluir_agendamento)
+        botao_excluir = ctk.CTkButton(self.janela_visualizar, text="Excluir", command=self.confirmar_exclusao)
         botao_excluir.pack(side="right", padx=(10, 20), pady=20)
 
         # Botão para fechar a janela
@@ -69,9 +69,9 @@ class Visualizar:
 
             # Abre a janela personalizada para edição
             self.janela_editar(codigo, nome, data, horario, local)
-        else:
-            messagebox.showwarning("Seleção Inválida", "Selecione um agendamento para editar.")
-
+            return
+        messagebox.showerror("Erro", "Houve um erro ao editar o agendamento", parent=self.parent)
+       
 
     def janela_editar(self, codigo, nome, data, horario, local):
         # Criação da janela de edição
@@ -122,11 +122,20 @@ class Visualizar:
                     agendamento.local = novo_local
                     break
             self.atualizar_tabela()  # Atualiza a tabela
-            messagebox.showinfo("Sucesso", "Agendamento editado com sucesso!")
             janela.destroy()  # Fecha a janela de edição
-        else:
-            messagebox.showwarning("Erro", "Nome e data não podem estar vazios.")
+            messagebox.showinfo("Sucesso", f"Agendamento {agendamento.codigo} editado com sucesso!", parent=self.tree.winfo_toplevel())
+            return
+        messagebox.showerror("Erro" f"Selecione um agendamento para editar!", parent=self.tree.winfo_toplevel())
 
+    def confirmar_exclusao(self):
+        # Obtém o item selecionado
+        itemSelecionado = self.tree.selection()
+        if itemSelecionado:
+            # Exibe a mensagem de confirmação
+            resposta = messagebox.askyesno("Confirmação", "Você tem certeza que deseja excluir este agendamento?", parent=self.tree.winfo_toplevel())
+            if resposta:  # Se o usuário confirmar
+                self.excluir_agendamento()
+    
     def excluir_agendamento(self):
         # Obtém o item selecionado
         itemSelecionado = self.tree.selection()
@@ -144,11 +153,9 @@ class Visualizar:
             if agendamento_encontrado:
                 self.agendamentos.remove(agendamento_encontrado)  # Remove da lista
                 self.tree.delete(itemSelecionado)  # Remove o item da Treeview
-                messagebox.showinfo("Excluir Agendamento", "Agendamento excluído com sucesso!")
+                messagebox.showinfo("Sucesso", "Agendamento excluído com sucesso!", parent=self.tree.winfo_toplevel())
                 return
-            messagebox.showwarning("Erro", "Agendamento não encontrado.")
-        else:
-            messagebox.showwarning("Seleção Inválida", "Selecione um agendamento para excluir.")
+            messagebox.showerror("Erro", "Selecione um agendamento para excluir!")
 
     
 
