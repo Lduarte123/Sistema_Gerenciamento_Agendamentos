@@ -1,47 +1,31 @@
 import customtkinter as ctk
+from tkinter import messagebox
 
-# Definindo o tema
-ctk.set_appearance_mode("dark")  # Modo escuro
-ctk.set_default_color_theme("blue")  # Tema azul
+class Login:
+    def __init__(self, controller, on_success):
+        self.controller = controller
+        self.on_success = on_success  # Função a ser chamada em caso de sucesso
+        self.janela_login = ctk.CTkToplevel(self.controller.root)  # Cria uma nova janela
+        self.janela_login.title("Login")
+        self.janela_login.geometry("400x300")
 
-# Função para lidar com o login
-def fazer_login():
-    usuario = entry_usuario.get()
-    senha = entry_senha.get()
-    print(f"Usuário: {usuario}, Senha: {senha}")  # Aqui você pode adicionar a lógica para verificar as credenciais.
+        self.label = ctk.CTkLabel(self.janela_login, text="Login")
+        self.label.pack(pady=10)
 
-# Função para criar conta
-def criar_conta():
-    print("Criar conta clicado!")  # Aqui você pode adicionar a lógica para criar uma nova conta.
+        self.username_entry = ctk.CTkEntry(self.janela_login, placeholder_text="Usuário")
+        self.username_entry.pack(pady=5)
 
-# Criação da janela principal
-app = ctk.CTk()
-app.title("Tela de Login")
-app.geometry("500x450")  # Tamanho ajustado para caber todos os elementos
+        self.password_entry = ctk.CTkEntry(self.janela_login, show="*", placeholder_text="Senha")
+        self.password_entry.pack(pady=5)
 
-# Criação dos widgets
-label_usuario = ctk.CTkLabel(app, text="Usuário:")
-label_usuario.pack(pady=10)
+        self.login_button = ctk.CTkButton(self.janela_login, text="Login", command=self.login)
+        self.login_button.pack(pady=20)
 
-entry_usuario = ctk.CTkEntry(app, placeholder_text="Digite seu usuário", width=150)  # Aumentando a largura
-entry_usuario.pack(pady=5)
+    def login(self):
+        username = self.username_entry.get()
+        password = self.password_entry.get()
 
-label_senha = ctk.CTkLabel(app, text="Senha:")
-label_senha.pack(pady=10)
-
-entry_senha = ctk.CTkEntry(app, show='*', placeholder_text="Digite sua senha", width=150)  # Aumentando a largura
-entry_senha.pack(pady=5)
-
-# Botão de Login
-botao_login = ctk.CTkButton(app, text="Login", command=fazer_login, width=150)  # Aumentando a largura
-botao_login.pack(pady=(35, 5))  # Espaçamento melhorado
-
-# Botão de Criar Conta
-botao_criar_conta = ctk.CTkButton(app, text="Criar Conta", command=criar_conta, width=150)  # Aumentando a largura
-botao_criar_conta.pack(pady=(15, 20))  # Espaçamento melhorado
-
-# Iniciar o loop da interface
-app.mainloop()
-
-
-#que ódio
+        if username == "admin" and password == "senha":  # Exemplo simples
+            self.on_success()  # Chama a função de sucesso
+        else:
+            messagebox.showerror("Erro", "Usuário ou senha incorretos.")
