@@ -26,7 +26,7 @@ class CriarAgendamento:
         label_nome = ctk.CTkLabel(frameCriarAgendamento, text="Nome do Evento:")
         label_nome.grid(row=0, column=0, padx=(0, 10), pady=(0, 10), sticky='w')
 
-        self.entrada_nome = ctk.CTkEntry(frameCriarAgendamento, width=200)
+        self.entrada_nome = ctk.CTkEntry(frameCriarAgendamento, placeholder_text="Inisira o evento",width=200)
         self.entrada_nome.grid(row=0, column=1, pady=(0, 10), sticky='ew')
 
         # Data
@@ -84,7 +84,7 @@ class CriarAgendamento:
 
         # Validação do horário
         if not re.match(r'^(?:[01]\d|2[0-3]):[0-5]\d$', horario):
-            messagebox.showerror("Erro", "Horário deve ser no formato HH:MM.")
+            messagebox.showerror("Erro", "Horário deve ser no formato HH:MM.", parent=self.janela_criar)
             return
 
         # Obter data e hora atuais
@@ -96,20 +96,20 @@ class CriarAgendamento:
 
         # Verificar se a data do agendamento é anterior à data atual
         if data_agendamento.date() < data_hora_atual.date():
-            messagebox.showerror("Erro", "A data selecionada já passou.")
+            messagebox.showerror("Erro", "A data selecionada já passou.", parent=self.janela_criar)
             return
 
         # Verificar se o horário é anterior ao horário atual se for no mesmo dia
         if data_agendamento.date() == data_hora_atual.date() and hora_agendamento < data_hora_atual.time():
-            messagebox.showerror("Erro", "O horário selecionado já passou.")
+            messagebox.showerror("Erro", "O horário selecionado já passou.", parent=self.janela_criar)
             return
 
         if nome and data and horario:
             # Não precisa mais concatenar a data e o horário, eles são tratados separadamente
             agendamento = Agendamento(nome, data, horario, local)
             self.agendamentos.append(agendamento)
-            messagebox.showinfo("Sucesso", f"Agendamento criado! Código: {agendamento.codigo}\n{agendamento.nome}\nLocal: {agendamento.local}\nData: {agendamento.data}\nHorário: {agendamento.horario}")
+            messagebox.showinfo("Sucesso", f"Agendamento criado! Código: {agendamento.codigo}\n{agendamento.nome}\nLocal: {agendamento.local}\nData: {agendamento.data}\nHorário: {agendamento.horario}", parent=self.janela_criar)
             self.janela_criar.destroy()  # Fecha a janela
             return
         
-        messagebox.showerror("Erro", "Preencha todos os campos.")
+        messagebox.showerror("Erro", "Preencha todos os campos.", parent=self.janela_criar)
