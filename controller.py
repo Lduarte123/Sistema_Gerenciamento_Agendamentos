@@ -3,7 +3,7 @@ from button import ButtonFrame
 from criarAgendamento import CriarAgendamento 
 from visualizar import Visualizar
 from tkinter import messagebox
-
+from criarConta import CriarConta
 class AppController:
     def __init__(self, root):
         self.root = root
@@ -29,6 +29,13 @@ class AppController:
 
         self.login_button = ctk.CTkButton(self.root, text="Login", command=self.login)
         self.login_button.pack(pady=20)
+
+      # Botão para criar conta
+        self.criar_conta_button = ctk.CTkButton(self.root, text="Criar conta", command=self.abrir_tela_criar_conta)
+        self.criar_conta_button.pack(pady=10)
+
+    def abrir_tela_criar_conta(self):
+        CriarConta(self.root)  # Abre a janela para criar conta
 
     def login(self):
         username = self.username_entry.get()

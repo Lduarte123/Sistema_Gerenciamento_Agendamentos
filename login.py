@@ -29,3 +29,5 @@ class Login:
             self.on_success()  # Chama a função de sucesso
         else:
             messagebox.showerror("Erro", "Usuário ou senha incorretos.")
+
+
