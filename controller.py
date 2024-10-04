@@ -47,12 +47,13 @@ class AppController:
             messagebox.showerror("Erro", "Usuário ou senha incorretos.")
 
     def setup_agendamento_ui(self):
-        # Esconde os campos de login
+        # Esconde os campos de login e o botão "Criar conta"
         self.label_usuario.pack_forget()
         self.username_entry.pack_forget()
         self.label_senha.pack_forget()
         self.password_entry.pack_forget()
         self.login_button.pack_forget()
+        self.criar_conta_button.pack_forget()  # Esconde o botão de criar conta
 
         # Configura a janela principal para agendamentos
         self.root.title("Sistema de Agendamento")
@@ -61,6 +62,7 @@ class AppController:
         self.button_frame = ButtonFrame(self.root)
         self.button_frame.button_a.configure(command=self.criar_agendamento)
         self.button_frame.button_b.configure(command=self.visualizar_agendamento)
+
 
     def criar_agendamento(self):
         CriarAgendamento(self.root, self.agendamentos)

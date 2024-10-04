@@ -4,9 +4,10 @@ from tkinter import messagebox
 class CriarConta:
     def __init__(self, root):
         self.root = root
-        self.criar_tela()
+        self.criar_tela()  # Chama a função para criar a tela imediatamente
 
     def criar_tela(self):
+        # Cria a nova janela Toplevel
         self.toplevel = ctk.CTkToplevel(self.root)
         self.toplevel.title("Criar Conta")
         self.toplevel.geometry("400x500")
@@ -42,8 +43,11 @@ class CriarConta:
         self.senha_entry = ctk.CTkEntry(self.toplevel, show="*", placeholder_text="Senha")
         self.senha_entry.pack(pady=5)
 
-        self.criar_conta_button = ctk.CTkButton(self.toplevel, text="Criar Conta", command=self.criar_conta)
-        self.criar_conta_button.pack(pady=20)
+        # Botão para criar a conta
+        self.confirmar_button = ctk.CTkButton(self.toplevel, text="Criar Conta", command=self.criar_conta)
+        self.confirmar_button.pack(pady=20)
+
+        self.toplevel.grab_set()
 
     def criar_conta(self):
         nome = self.nome_entry.get()
@@ -57,4 +61,6 @@ class CriarConta:
         else:
             # Aqui você pode implementar a lógica de validação e salvamento de dados
             messagebox.showinfo("Sucesso", "Conta criada com sucesso!")
-            self.toplevel.destroy()
+            self.toplevel.destroy()  # Fecha a janela após a criação da conta
+        self.toplevel.destroy()
+        
