@@ -3,6 +3,7 @@ from tkcalendar import Calendar
 import tkinter as tk
 from tkinter import Toplevel, messagebox
 from datetime import datetime
+from model.usuario import UsuarioModel
 
 
 class RegisterView(ctk.CTkFrame):
@@ -124,8 +125,11 @@ class RegisterView(ctk.CTkFrame):
         data_nasc = self.data_nasc_var.get()  # data no formato MM-DD-AAAA
         cidade = self.cidade_entry.get()
         sexo = self.sexo_entry.get()
-
+        
+        
         emails_cadastrados = self.controller.obter_emails_cadastrados()
+
+        
 
         if not all([nome, senha, email, data_nasc, cidade, sexo]):
             messagebox.showerror("Erro", "Todos os campos são obrigatórios. Por favor, preencha todos os campos.")
@@ -143,12 +147,21 @@ class RegisterView(ctk.CTkFrame):
 
         try:
             # Valida a data no formato MM-DD-AAAA
-            valid_date = datetime.strptime(data_nasc, "%d-%m-%Y")
+            valid_date = datetime.strptime(data_nasc, "%d/%m/%Y")
             if valid_date > datetime.now():
                 raise ValueError("A data não pode ser no futuro.")
         except ValueError:
             messagebox.showerror("Erro", "Data inválida. Por favor, insira uma data válida no formato mês-dia-ano (MM-DD-AAAA).")
             return
+        
+        usuario = UsuarioModel(
+            nome=nome,
+            email=email,
+            senha=senha,
+            data_nasc=valid_date.date(),  # Usar a data validada
+            cidade=cidade,
+            sexo=sexo
+        )
 
         # Chama o método registrar_usuario com todos os parâmetros
         if self.controller.registrar_usuario(nome, email, senha, data_nasc, cidade, sexo):

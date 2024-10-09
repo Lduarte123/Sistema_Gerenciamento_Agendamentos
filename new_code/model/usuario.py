@@ -7,7 +7,15 @@ class UsuarioModel:
         self.data_nasc = data_nasc
         self.cidade = cidade
         self.sexo = sexo
-    
+
+usuario = UsuarioModel(
+    nome=nome,
+    email=usu,
+    senha=senha,
+    data_nasc=data_nasc,
+    cidade=cidade,
+    sexo=sexo)
+
 
 # #  id = Column(Integer, primary_key=True, autoincrement=True)
 #     nome = Column(String, nullable=False)
