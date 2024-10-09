@@ -87,26 +87,21 @@ class RegisterView(ctk.CTkFrame):
 
 
 
-    def select_date(self):
-        """Obtém a data selecionada e fecha o calendário."""
-        selected_date = self.calendar.get_date()  # Exemplo: '10/2/23' ou '10/02/2023'
-        print(f"Data selecionada: {selected_date}")  # Para depuração
+    # def select_date(self):
+    #     """Obtém a data selecionada e fecha o calendário."""
+    #     selected_date = self.calendar.get_date()  # Exemplo: '10/2/23' ou '10/02/2023'
+    #     print(f"Data selecionada: {selected_date}")  # Para depuração
 
-        # Tenta converter a data para o formato DD-MM-AAAA
-        try:
-            # Aceitando formatos de dois e quatro dígitos para o ano
-            valid_date = datetime.strptime(selected_date, "%d-%m-%y")  # Para '10/2/23'
-        except ValueError:
-            try:
-                valid_date = datetime.strptime(selected_date, "%d-%m-%Y")  # Para '10/02/2023'
-            except ValueError:
-                messagebox.showerror("Erro", "Formato de data inválido. Por favor, use dia/mês/ano.")
-                return
+    #     try:
+    #         valid_date = datetime.strptime(selected_date, "%d/%m/%Y")  # Para '10/02/2023'
+    #     except ValueError:
+    #         messagebox.showerror("Erro", "Formato de data inválido. Por favor, use dia/mês/ano.")
+    #         return
 
-        formatted_date = valid_date.strftime("%d-%m-%Y")  # Formata para DD-MM-AAAA
-        self.data_nasc_var.set(formatted_date)  # Armazena a data como string
-        print(f"Data formatada: {formatted_date}")  # Para depuração
-        self.calendar_window.destroy()
+    #     formatted_date = valid_date.strftime("%d-%m-%Y")  # Formata para DD-MM-AAAA
+    #     self.data_nasc_var.set(formatted_date)  # Armazena a data como string
+    #     print(f"Data formatada: {formatted_date}")  # Para depuração
+    #     self.calendar_window.destroy()
 
 
     def select_date(self):
@@ -114,18 +109,10 @@ class RegisterView(ctk.CTkFrame):
         selected_date = self.calendar.get_date()  # Exemplo: '10/3/23'
         print(f"Data selecionada: {selected_date}")  # Para depuração
 
-        # Tenta converter a data para o formato DD-MM-AAAA
-        try:
-            valid_date = datetime.strptime(selected_date, "%d-%m-%y")  # Para '10/3/23'
-        except ValueError:
-            try:
-                valid_date = datetime.strptime(selected_date, "%d-%m-%Y")  # Para '10/03/2023'
-            except ValueError:
-                messagebox.showerror("Erro", "Formato de data inválido. Por favor, use dia/mês/ano.")
-                return
 
-        # Inverte dia e mês
-        inverted_date = valid_date.strftime("%d-%m-%Y")  # Formata para MM-DD-AAAA
+        valid_date = datetime.strptime(selected_date, "%m/%d/%y")  # Para '10/3/23'
+   
+        inverted_date = valid_date.strftime("%d/%m/%Y")  # Formata para MM-DD-AAAA
         self.data_nasc_var.set(inverted_date)  # Armazena a data como string
         print(f"Data invertida: {inverted_date}")  # Para depuração
         self.calendar_window.destroy()
