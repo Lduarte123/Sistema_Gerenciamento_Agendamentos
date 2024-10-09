@@ -1,50 +1,57 @@
 from config import create_connection
+from sqlalchemy import Column, Integer, String, Date, Time
+from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy import create_engine
+from datetime import datetime
+
+Base = declarative_base()
+
+class UsuarioModel(Base):
+    __tablename__ = 'agendamentos'
+    
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    nome = Column(String, nullable=False)
+    senha = Column(String, nullable=False)
+    email = Column(String, nullable=False)
+    data_nasc = Column(Date, nullable=False)
+    cidade = Column(String, nullable=False)
+    sexo = Column(String,  nullable=False)
+
+
+engine = create_engine('postgresql://postgres:123@localhost/postgres')
+Session = sessionmaker(bind=engine)
+
 
 class UsuarioRepository:
     def __init__(self):
-        self.connection = create_connection()
+        self.session = Session()
 
     def validar_usuario(self, email, senha):
+        usuario = self.session.query(UsuarioModel).filter(UsuarioModel.email == email, UsuarioModel.senha == senha).first()
+        return usuario
+    
+
+    def registrar_usuario(self, usuario):
         try:
-            # Reabre a conexão caso ela tenha sido fechada
-            if self.connection.closed:
-                self.connection = create_connection()
+            data_nasc = datetime.strptime(usuario.data_nasc, "%d-%m-%Y").date()
+        except ValueError:
+            data_nasc = usuario.data_nasc
 
-            with self.connection.cursor() as cursor:
-                cursor.execute("SELECT * FROM usuarios WHERE email = %s AND senha = %s", (email, senha))
-                return cursor.fetchone() is not None
-        except Exception as e:
-            print(f"Erro ao validar usuário: {e}")
-            return False
+        novo_usuario = UsuarioModel(
+            nome=usuario.nome,
+            email=usuario.email,
+            senha=usuario.senha,
+            data_nasc=data_nasc,
+            cidade=usuario.cidade,
+            sexo=usuario.sexo
+        )
 
+        self.session.add(novo_usuario)
+        self.session.commit()
 
-    def registrar_usuario(self, nome, email, senha, data_nasc, cidade, sexo):
-        try:
-            cursor = self.connection.cursor()
-            # Ajustando os marcadores de posição para o PostgreSQL
-            sql = "INSERT INTO usuarios (nome, email, senha, data_nasc, cidade, sexo) VALUES (%s, %s, %s, %s, %s, %s)"
-            cursor.execute(sql, (nome, email, senha, data_nasc, cidade, sexo))
-            
-            self.connection.commit()
-            return True  # Sucesso
-            
-        except Exception as e:
-            print(f"Erro ao registrar usuário: {e}")  # Exibe o erro no console
-            self.connection.rollback()  # Reverte a operação se houver um erro
-            return False  # Indica falha no registro
         
     def obter_emails_cadastrados(self):
-        """Obtém todos os e-mails cadastrados no banco de dados."""
-        try:
-            query = "SELECT email FROM usuarios"
-            cursor = self.connection.cursor()
-            cursor.execute(query)
-            # Armazena todos os e-mails em uma lista
-            emails = [row[0] for row in cursor.fetchall()]
-            cursor.close()
-            return emails
-        except Exception as e:
-            print(f"Erro ao obter e-mails: {e}")
-            return []  # Retorna uma lista vazia em caso de erro
-
+        query = self.session.query(UsuarioModel.email).all()
+        emails = [email[0] for email in query]
+        return emails
 

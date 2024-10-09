@@ -14,7 +14,12 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("Agendamento")
-        self.geometry("800x600")
+
+        largura = self.winfo_screenwidth()
+        altura = self.winfo_screenheight()
+
+
+        self.geometry(f"{largura}x{altura}+1+1")
 
         self.controller = AppController(self)
         self.controller.exibir_tela_login()

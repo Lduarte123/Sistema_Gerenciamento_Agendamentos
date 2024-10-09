@@ -5,10 +5,10 @@ def create_connection():
     try:
         connection = psycopg2.connect(
             user="postgres",
-            password="123",
+            password="postgres",
             host="localhost",
             port="5432",
-            database="postgres"
+            database="senac"
         )
         print("Conexão com PostgreSQL bem-sucedida")
         return connection

@@ -3,6 +3,7 @@ from tkinter import ttk, messagebox
 from repository.agendamento_repository import AgendamentoRepository
 from model.agendamento import AgendamentoModel as Agendamento
 from view.editar_agendamento_view import Editar
+from datetime import datetime
 
 class VisualizarFrame(ctk.CTkFrame):
     def __init__(self, master, agendamento_repository):
@@ -42,6 +43,7 @@ class VisualizarFrame(ctk.CTkFrame):
         self.btn_excluir = ctk.CTkButton(self.botao_frame, text="Excluir", command=self.excluir_agendamento)
         self.btn_excluir.pack(side="left")
 
+
     def atualizar_tabela(self):
         # Limpa a tabela antes de adicionar novos dados
         for row in self.tree.get_children():
@@ -50,9 +52,25 @@ class VisualizarFrame(ctk.CTkFrame):
         agendamentos = self.agendamento_repository.listar_agendamentos()
 
         for agendamento in agendamentos:
-            # Formata a data e o horário corretamente
-            data_formatada = agendamento.data.strftime("%d-%m-%Y")  # Formato dd-mm-aaaa
-            horario_formatado = agendamento.horario.strftime("%H:%M")  # Formato HH:MM
+            # Verifica se agendamento.data é uma string e converte
+            if isinstance(agendamento.data, str):
+                try:
+                    # Primeiro tenta converter se estiver no formato YYYY-MM-DD
+                    data_agendamento = datetime.strptime(agendamento.data, "%Y-%m-%d")
+                except ValueError:
+                    # Se falhar, assume que está no formato DD-MM-YYYY
+                    data_agendamento = datetime.strptime(agendamento.data, "%d-%m-%Y")
+            else:
+                data_agendamento = agendamento.data  # Presume que já é um objeto datetime
+
+            # Formata a data corretamente como string
+            data_formatada = data_agendamento.strftime("%d-%m-%Y")  # Formato dd-mm-aaaa
+
+            # Para o horário, você deve verificar da mesma forma
+            if isinstance(agendamento.horario, str):
+                horario_formatado = agendamento.horario  # Presume que já é uma string no formato correto
+            else:
+                horario_formatado = agendamento.horario.strftime("%H:%M")  # Formata o horário
 
             # Exibe os dados para debug
             print(f"ID: {agendamento.id}, Nome: {agendamento.nome}, Data: {data_formatada}, Horário: {horario_formatado}, Local: {agendamento.local}, Descrição: {agendamento.descricao}")

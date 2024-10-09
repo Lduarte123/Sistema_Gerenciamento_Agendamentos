@@ -7,11 +7,6 @@ import re
 from repository.agendamento_repository import AgendamentoRepository
 from model.agendamento import AgendamentoModel as Agendamento
 
-
-
-
-
-
 class CriarAgendamentoFrame(ctk.CTkFrame):
     def __init__(self, master, agendamento_model, controller):
         super().__init__(master)
@@ -28,7 +23,7 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
         self.label_titulo = ctk.CTkLabel(self.frame_interno, text="Criar Agendamento", font=("Arial", 20, "bold"))
         self.label_titulo.grid(row=0, column=0, pady=(10, 10))
 
-        self.label_nome = ctk.CTkLabel(self.frame_interno, text="Nome do Evento*:")
+        self.label_nome = ctk.CTkLabel(self.frame_interno, text="Nome do Evento*:") 
         self.label_nome.grid(row=1, column=0, padx=10, pady=(10, 5), sticky="w")
         self.entrada_nome = ctk.CTkEntry(self.frame_interno, placeholder_text="Nome do Evento", width=250)
         self.entrada_nome.grid(row=2, column=0, padx=10, pady=5)
@@ -38,17 +33,17 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
         self.entrada_horario = ctk.CTkEntry(self.frame_interno, placeholder_text="HH:MM", width=250)
         self.entrada_horario.grid(row=4, column=0, padx=10, pady=5)
 
-        self.label_data = ctk.CTkLabel(self.frame_interno, text="Data*:")
+        self.label_data = ctk.CTkLabel(self.frame_interno, text="Data*:") 
         self.label_data.grid(row=5, column=0, padx=10, pady=(10, 5), sticky="w")
         self.calendario = Calendar(self.frame_interno, selectmode='day', width=250)
         self.calendario.grid(row=6, column=0, padx=10, pady=5)
 
-        self.label_descricao = ctk.CTkLabel(self.frame_interno, text="Descrição:")
+        self.label_descricao = ctk.CTkLabel(self.frame_interno, text="Descrição:") 
         self.label_descricao.grid(row=9, column=0, padx=10, pady=(10, 5), sticky="w")
         self.entrada_descricao = ctk.CTkEntry(self.frame_interno, placeholder_text="Descrição do Evento", width=250)
         self.entrada_descricao.grid(row=10, column=0, padx=10, pady=5)
 
-        self.label_localizacao = ctk.CTkLabel(self.frame_interno, text="Localização*:")
+        self.label_localizacao = ctk.CTkLabel(self.frame_interno, text="Localização*:") 
         self.label_localizacao.grid(row=7, column=0, padx=10, pady=(10, 5), sticky="w")
         self.entrada_localizacao = ctk.CTkEntry(self.frame_interno, placeholder_text="Localização", width=250)
         self.entrada_localizacao.grid(row=8, column=0, padx=10, pady=5)
@@ -63,12 +58,11 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
         self.botao_voltar.grid(row=0, column=1)
 
         # Configura o frame interno para ocupar espaço
-        self.frame_interno.grid_rowconfigure(0, weight=1)  # Permite que a linha dos botões ocupe espaço
-        self.frame_interno.grid_columnconfigure(0, weight=1)  # Centraliza na coluna 0
+        self.frame_interno.grid_rowconfigure(0, weight=1) 
+        self.frame_interno.grid_columnconfigure(0, weight=1) 
 
-        # Centraliza o frame_interno na janela
-        self.pack_propagate(False)  # Evita que o frame encolha
-        self.pack(expand=True)  # Expande o frame na janela
+        self.pack_propagate(False)
+        self.pack(expand=True)
 
     def voltar(self):
         self.master.controller.exibir_tela_inicial()
@@ -76,7 +70,7 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
 
     def salvar(self):
         nome = self.entrada_nome.get().strip()  # Nome em string
-        data = self.calendario.get_date()  # Data em string (dd/mm/yyyy)
+        data = self.calendario.get_date().strip()  # Data em string (MM/DD/AA ou MM/DD/YYYY)
         horario = self.entrada_horario.get().strip()  # Horário em string (HH:MM)
         local = self.entrada_localizacao.get().strip()  # Local em string
         descricao = self.entrada_descricao.get()  # Descrição em string
@@ -88,8 +82,13 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
 
         # Verificação da data e conversão
         try:
-            # Aqui estamos assumindo que data está no formato correto. Ajuste se necessário.
-            data_agendamento = datetime.strptime(data, "%d/%m/%Y")
+            print(f"Data recebida: {data}")  # Depuração
+            
+            # Tentativa de conversão da data para o formato MM/DD/AA ou MM/DD/YYYY
+            if len(data.split('/')[-1]) == 2:  # Se o ano tem 2 dígitos
+                data_agendamento = datetime.strptime(data, "%m/%d/%y")  # MM/DD/AA
+            else:
+                data_agendamento = datetime.strptime(data, "%m/%d/%Y")  # MM/DD/YYYY
 
             # Verificando se a data não está no passado
             data_hora_atual = datetime.now()
@@ -103,7 +102,7 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
                 return
 
         except ValueError:
-            messagebox.showerror("Erro", "Formato de data inválido. Use DD/MM/AAAA.")
+            messagebox.showerror("Erro", "Formato de data inválido. Use MM/DD/AAAA ou MM/DD/AA.")
             return
 
         # Validação para garantir que os campos obrigatórios estejam preenchidos
@@ -111,8 +110,8 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
             messagebox.showerror("Erro", "Preencha todos os campos obrigatórios.")
             return
 
-        # Convertendo a data para o formato correto (YYYY-MM-DD)
-        data_formatada = data.replace('/', '-')  # Troca '/' por '-'
+        # Convertendo a data para o formato desejado (DD-MM-AAAA)
+        data_formatada = data_agendamento.strftime("%d-%m-%Y")  # Formato como string para o banco de dados
 
         # Criar o objeto agendamento com strings
         agendamento = Agendamento(nome=nome, data=data_formatada, horario=horario, local=local, descricao=descricao or "")
