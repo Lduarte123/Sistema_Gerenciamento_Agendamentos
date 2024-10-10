@@ -2,7 +2,7 @@ CREATE TABLE usuarios (
     id SERIAL PRIMARY KEY,
     usuario VARCHAR(50) UNIQUE NOT NULL,
     senha VARCHAR(50) NOT NULL
-);
+-- ); so nao executa esse       MV
 
 CREATE TABLE agendamentos (
     id SERIAL PRIMARY KEY,
