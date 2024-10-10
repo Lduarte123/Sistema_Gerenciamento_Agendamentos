@@ -116,16 +116,16 @@ class RegisterView(ctk.CTkFrame):
 
         # Tenta converter a data para o formato DD-MM-AAAA
         try:
-            valid_date = datetime.strptime(selected_date, "%d-%m-%y")  # Para '10/3/23'
+            valid_date = datetime.strptime(selected_date, "%d/%m/%y")  # Para '10/3/23'
         except ValueError:
             try:
-                valid_date = datetime.strptime(selected_date, "%d-%m-%Y")  # Para '10/03/2023'
+                valid_date = datetime.strptime(selected_date, "%d/%m/%Y")  # Para '10/03/2023'
             except ValueError:
                 messagebox.showerror("Erro", "Formato de data inválido. Por favor, use dia/mês/ano.")
                 return
 
         # Inverte dia e mês
-        inverted_date = valid_date.strftime("%d-%m-%Y")  # Formata para MM-DD-AAAA
+        inverted_date = valid_date.strftime("%d/%m/%Y")  # Formata para MM-DD-AAAA
         self.data_nasc_var.set(inverted_date)  # Armazena a data como string
         print(f"Data invertida: {inverted_date}")  # Para depuração
         self.calendar_window.destroy()
@@ -156,7 +156,7 @@ class RegisterView(ctk.CTkFrame):
 
         try:
             # Valida a data no formato MM-DD-AAAA
-            valid_date = datetime.strptime(data_nasc, "%d-%m-%Y")
+            valid_date = datetime.strptime(data_nasc, "%d/%m/%Y")
             if valid_date > datetime.now():
                 raise ValueError("A data não pode ser no futuro.")
         except ValueError:

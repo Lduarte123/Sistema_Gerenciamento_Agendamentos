@@ -7,7 +7,7 @@ from datetime import datetime
 Base = declarative_base()
 
 class UsuarioModel(Base):
-    __tablename__ = 'agendamentos'
+    __tablename__ = 'usuarios'
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     nome = Column(String, nullable=False)
@@ -18,7 +18,7 @@ class UsuarioModel(Base):
     sexo = Column(String,  nullable=False)
 
 
-engine = create_engine('postgresql://postgres:123@localhost/postgres')
+engine = create_engine('postgresql://postgres:postgres@localhost/senac')
 Session = sessionmaker(bind=engine)
 
 

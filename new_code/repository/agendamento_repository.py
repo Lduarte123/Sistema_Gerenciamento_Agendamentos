@@ -15,7 +15,7 @@ class AgendamentoModel(Base):
     local = Column(String, nullable=False)
     descricao = Column(String, nullable=True)
 
-engine = create_engine('postgresql://postgres:123@localhost/postgres')
+engine = create_engine('postgresql://postgres:postgres@localhost/senac')
 Session = sessionmaker(bind=engine)
 
 class AgendamentoRepository:
