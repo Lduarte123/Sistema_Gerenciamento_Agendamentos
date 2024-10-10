@@ -134,7 +134,7 @@ class RegisterView(ctk.CTkFrame):
         nome = self.nome_entry.get()
         senha = self.senha_entry.get()
         email = self.email_entry.get()
-        data_nasc = self.data_nasc_var.get()  # data no formato MM-DD-AAAA
+        data_nasc = self.data_nasc_var.get()  # data no formato DD-MM-AAAA
         cidade = self.cidade_entry.get()
         sexo = self.sexo_entry.get()
 
@@ -155,20 +155,22 @@ class RegisterView(ctk.CTkFrame):
         print(f"Data a ser registrada: {data_nasc}")  # Para depuração
 
         try:
-            # Valida a data no formato MM-DD-AAAA
+            # Valida a data no formato DD-MM-AAAA
             valid_date = datetime.strptime(data_nasc, "%d/%m/%Y")
             if valid_date > datetime.now():
                 raise ValueError("A data não pode ser no futuro.")
         except ValueError:
-            messagebox.showerror("Erro", "Data inválida. Por favor, insira uma data válida no formato mês-dia-ano (MM-DD-AAAA).")
+            messagebox.showerror("Erro", "Data inválida. Por favor, insira uma data válida no formato dia-mês-ano (DD/MM/AAAA).")
             return
 
         # Chama o método registrar_usuario com todos os parâmetros
-        if self.controller.registrar_usuario(nome, email, senha, data_nasc, cidade, sexo):
+        resultado = self.controller.registrar_usuario(nome, email, senha, data_nasc, cidade, sexo)
+        if resultado:
             messagebox.showinfo("Sucesso", "Usuário registrado com sucesso!")
             self.voltar()
         else:
             messagebox.showerror("Erro", "Erro ao registrar usuário. Verifique suas informações.")
+
 
     def voltar(self):
         self.controller.exibir_tela_login()

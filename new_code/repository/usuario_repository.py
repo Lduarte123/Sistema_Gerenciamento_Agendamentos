@@ -31,23 +31,31 @@ class UsuarioRepository:
         return usuario
     
 
-    def registrar_usuario(self, usuario):
+    def registrar_usuario(self, nome, email, senha, data_nasc, cidade, sexo):
+        print(f"Tentando registrar: {nome}, {email}, {data_nasc}, {cidade}, {sexo}")  # Para depuração
         try:
-            data_nasc = datetime.strptime(usuario.data_nasc, "%d-%m-%Y").date()
-        except ValueError:
-            data_nasc = usuario.data_nasc
+            # Aqui você pode validar e preparar a data, se necessário
+            data_nasc_formatada = datetime.strptime(data_nasc, "%d/%m/%Y").date()
 
-        novo_usuario = UsuarioModel(
-            nome=usuario.nome,
-            email=usuario.email,
-            senha=usuario.senha,
-            data_nasc=data_nasc,
-            cidade=usuario.cidade,
-            sexo=usuario.sexo
-        )
+            novo_usuario = UsuarioModel(
+                nome=nome,
+                email=email,
+                senha=senha,
+                data_nasc=data_nasc_formatada,
+                cidade=cidade,
+                sexo=sexo
+            )
+            
+            self.session.add(novo_usuario)
+            self.session.commit()
+            print("Usuário registrado com sucesso.")  # Para depuração
+            return True
+        except Exception as e:
+            print(f"Erro ao registrar usuário: {e}")  # Log do erro
+            self.session.rollback()  # Reverter alterações em caso de erro
+            return False
 
-        self.session.add(novo_usuario)
-        self.session.commit()
+
 
         
     def obter_emails_cadastrados(self):
