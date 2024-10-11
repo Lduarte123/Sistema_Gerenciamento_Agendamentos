@@ -5,7 +5,7 @@ from model.agendamento import AgendamentoModel as Agendamento
 from view.editar_agendamento_view import Editar
 from datetime import datetime
 
-class VisualizarFrame(ctk.CTkFrame):
+class VisualizarFrame(ctk.CTkFrame): #vizualização em treeview
     def __init__(self, master, agendamento_repository):
         super().__init__(master)
         self.agendamento_repository = agendamento_repository
