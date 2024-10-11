@@ -1,11 +1,14 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
+from datetime import date
 
 class ButtonFrame(ctk.CTkFrame):
-    def __init__(self, master, controller):
+    def __init__(self, master, controller, usuario):
         super().__init__(master, fg_color="transparent")
         self.controller = controller
+        self.usuario = usuario  # Armazena o objeto do usuário
         self.grid(row=0, column=0, sticky="nsew")
+        self.exibir_informacoes_usuario()  # Chama para exibir as informações do usuário
 
         # Carrega as imagens
         self.imagem_agendar = self.carregar_imagem("new_code/assets/image_c.png", (80, 80))
@@ -31,7 +34,37 @@ class ButtonFrame(ctk.CTkFrame):
 
         self.botao_frame.pack(expand=True)
 
+    def exibir_informacoes_usuario(self):
+        # Título
+        titulo_label = ctk.CTkLabel(self, text="Informações do Usuário", font=("Arial", 24, "bold"), text_color="white")
+        titulo_label.pack(pady=10)
+
+        # Nome
+        nome_label = ctk.CTkLabel(self, text=f"Nome: {self.usuario.nome}", text_color="white")
+        nome_label.pack(pady=(5, 0))
+
+        # Idade
+        idade_label = ctk.CTkLabel(self, text=f"Idade: {self.calcular_idade(self.usuario.data_nasc)} anos", text_color="white")
+        idade_label.pack(pady=(5, 0))
+
+        # E-mail
+        email_label = ctk.CTkLabel(self, text=f"E-mail: {self.usuario.email}", text_color="white")
+        email_label.pack(pady=(5, 0))
+
+        # Cidade
+        cidade_label = ctk.CTkLabel(self, text=f"Cidade: {self.usuario.cidade}", text_color="white")
+        cidade_label.pack(pady=(5, 0))
+
+        # Sexo
+        sexo_label = ctk.CTkLabel(self, text=f"Sexo: {self.usuario.sexo}", text_color="white")
+        sexo_label.pack(pady=(5, 0))
+
     def carregar_imagem(self, caminho, tamanho):
         imagem = Image.open(caminho)
         imagem = imagem.resize(tamanho)
         return ImageTk.PhotoImage(imagem)
+    
+    def calcular_idade(self, data_nasc):
+        hoje = date.today()  # Obtém a data atual
+        idade = hoje.year - data_nasc.year - ((hoje.month, hoje.day) < (data_nasc.month, data_nasc.day))
+        return idade

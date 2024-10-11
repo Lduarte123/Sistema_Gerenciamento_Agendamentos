@@ -1,5 +1,6 @@
 import customtkinter as ctk
 
+
 class LoginView(ctk.CTkFrame):
     def __init__(self, root, controller):
         super().__init__(root)
@@ -41,14 +42,15 @@ class LoginView(ctk.CTkFrame):
         self.register_button.pack(pady=10)
 
     def login(self):
-        username = self.username_entry.get()
+        email = self.username_entry.get()  # Alterado de username para email
         password = self.password_entry.get()
 
-        if self.controller.validar_login(username, password):
+        usuario = self.controller.validar_login(email, password)  # Modificado para retornar o objeto do usuário
+
+        if usuario:
             print("Login bem-sucedido")
-            self.controller.exibir_tela_inicial()
+            self.controller.exibir_tela_inicial(usuario)  # Passa o objeto do usuário para a tela inicial
         else:
             print("Usuário ou senha incorretos")
-
     def open_register(self):
         self.controller.exibir_tela_registro()

@@ -56,10 +56,11 @@ class UsuarioRepository:
             return False
 
 
-
         
     def obter_emails_cadastrados(self):
         query = self.session.query(UsuarioModel.email).all()
         emails = [email[0] for email in query]
         return emails
 
+    def obter_usuario_por_id(self, usuario_id):
+        return self.session.query(UsuarioModel).filter(UsuarioModel.id == usuario_id).first()
