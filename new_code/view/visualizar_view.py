@@ -5,11 +5,16 @@ from model.agendamento import AgendamentoModel as Agendamento
 from view.editar_agendamento_view import Editar
 from datetime import datetime
 
-class VisualizarFrame(ctk.CTkFrame): #vizualização em treeview
+class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
     def __init__(self, master, agendamento_repository):
         super().__init__(master)
         self.agendamento_repository = agendamento_repository
 
+        self.pagina_atual = 0
+        self.itens_por_pagina = 40
+        self.total_agendamentos = 0
+
+        # Configuração da Treeview
         self.tree = ttk.Treeview(self, columns=("id", "nome", "data", "horario", "local", "descricao"), show='headings')
         self.tree.heading("id", text="ID")
         self.tree.heading("nome", text="Nome")
@@ -25,14 +30,17 @@ class VisualizarFrame(ctk.CTkFrame): #vizualização em treeview
         self.tree.column("local", width=150)
         self.tree.column("descricao", width=200)
 
-
         self.tree.pack(pady=20, fill="both", expand=True)
-
-        self.atualizar_tabela()
 
         # Frame para os botões
         self.botao_frame = ctk.CTkFrame(self)
         self.botao_frame.pack(pady=10)
+
+        self.btn_anterior = ctk.CTkButton(self.botao_frame, text="Anterior", command=self.pagina_anterior)
+        self.btn_anterior.pack(side="left", padx=(0, 10))
+
+        self.btn_proximo = ctk.CTkButton(self.botao_frame, text="Próximo", command=self.pagina_proximo)
+        self.btn_proximo.pack(side="left", padx=(0, 40))
 
         self.btn_voltar = ctk.CTkButton(self.botao_frame, text="Editar", command=self.editar_agendamento)
         self.btn_voltar.pack(side="left", padx=(0, 10))  # Margem à direita
@@ -43,15 +51,24 @@ class VisualizarFrame(ctk.CTkFrame): #vizualização em treeview
         self.btn_excluir = ctk.CTkButton(self.botao_frame, text="Excluir", command=self.excluir_agendamento)
         self.btn_excluir.pack(side="left")
 
+        # Chama a atualização da tabela após os botões terem sido criados
+        self.atualizar_tabela()
 
     def atualizar_tabela(self):
-        # Limpa a tabela antes de adicionar novos dados
+    # Limpa a tabela antes de adicionar novos dados
         for row in self.tree.get_children():
             self.tree.delete(row)
 
+        # Obtém a lista completa de agendamentos
         agendamentos = self.agendamento_repository.listar_agendamentos()
+        self.total_agendamentos = len(agendamentos)
 
-        for agendamento in agendamentos:
+        # Calcula os índices para a página atual
+        inicio = self.pagina_atual * self.itens_por_pagina
+        fim = inicio + self.itens_por_pagina
+        agendamentos_pagina = agendamentos[inicio:fim]
+
+        for agendamento in agendamentos_pagina:
             # Verifica se agendamento.data é uma string e converte
             if isinstance(agendamento.data, str):
                 try:
@@ -78,6 +95,9 @@ class VisualizarFrame(ctk.CTkFrame): #vizualização em treeview
             # Insere os dados formatados na tabela, incluindo a descrição
             self.tree.insert('', 'end', values=(agendamento.id, agendamento.nome, data_formatada, horario_formatado, agendamento.local, agendamento.descricao if agendamento.descricao else "N/A"))  # Exibe "N/A" se descrição for vazia
 
+        # Atualiza o estado dos botões de navegação
+        self.btn_anterior.configure(state="normal" if self.pagina_atual > 0 else "disabled")
+        self.btn_proximo.configure(state="normal" if fim < self.total_agendamentos else "disabled")
 
 
     def editar_agendamento(self):
@@ -89,18 +109,16 @@ class VisualizarFrame(ctk.CTkFrame): #vizualização em treeview
         item_values = self.tree.item(selected_item, "values")
         id_agendamento = item_values[0]
 
-        # Cria um objeto agendamento a partir dos dados selecionados
         agendamento_selecionado = Agendamento(
             id=id_agendamento,
             nome=item_values[1],
             data=item_values[2],
             horario=item_values[3],
             local=item_values[4],
-            descricao=item_values[5] if len(item_values) > 5 else ""  # Adiciona a descrição
+            descricao=item_values[5] if len(item_values) > 5 else ""
         )
 
         editar = Editar(self, agendamento_selecionado, self.atualizar_agendamento_dados)
-
 
     def voltar(self):
         self.master.controller.exibir_tela_inicial()
@@ -115,7 +133,6 @@ class VisualizarFrame(ctk.CTkFrame): #vizualização em treeview
             descricao=nova_descricao
         )
 
-        # Atualiza o agendamento no repositório
         self.agendamento_repository.atualizar_agendamento(agendamento_atualizado)
         self.atualizar_tabela()
 
@@ -127,13 +144,22 @@ class VisualizarFrame(ctk.CTkFrame): #vizualização em treeview
                 agendamento_id = self.get_agendamento_id()
                 self.agendamento_repository.excluir_agendamento(agendamento_id)
                 messagebox.showinfo("Sucesso", "Agendamento excluído com sucesso!")
-                self.atualizar_tabela() 
+                self.atualizar_tabela()
                 return
         messagebox.showerror("Erro", "Selecione um agendamento para excluir.")
-
 
     def get_agendamento_id(self):
         selected_item = self.tree.selection()
         if selected_item:
             return self.tree.item(selected_item, "values")[0]
         return None
+
+    def pagina_anterior(self):
+        if self.pagina_atual > 0:
+            self.pagina_atual -= 1
+            self.atualizar_tabela()
+
+    def pagina_proximo(self):
+        if (self.pagina_atual + 1) * self.itens_por_pagina < self.total_agendamentos:
+            self.pagina_atual += 1
+            self.atualizar_tabela()
