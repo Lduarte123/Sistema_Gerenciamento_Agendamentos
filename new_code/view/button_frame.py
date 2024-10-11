@@ -10,6 +10,7 @@ class ButtonFrame(ctk.CTkFrame):
         # Carrega as imagens
         self.imagem_agendar = self.carregar_imagem("new_code/assets/image_c.png", (80, 80))
         self.imagem_visualizar = self.carregar_imagem("new_code/assets/image_v.png", (80, 80))
+        self.imagem_perfil = self.carregar_imagem("new_code/assets/imagem_perfil", (80, 80))
 
         self.botao_frame = ctk.CTkFrame(self, fg_color="transparent")
         self.botao_frame.grid(row=0, column=0, padx=20, pady=20)
@@ -25,6 +26,12 @@ class ButtonFrame(ctk.CTkFrame):
         
         self.button_b = ctk.CTkButton(
             self.botao_frame, text="Visualizar", image=self.imagem_visualizar, compound="top",
+            width=100, height=100, corner_radius=15, command=self.controller.abrir_visualizar_agendamento
+        )
+        self.button_b.pack(side="left", padx=5, pady=0)
+
+        self.button_c = ctk.CTkButton(
+            self.botao_frame, text="Perfil", image=self.imagem_perfil, compound="top",
             width=100, height=100, corner_radius=15, command=self.controller.abrir_visualizar_agendamento
         )
         self.button_b.pack(side="left", padx=5, pady=0)
