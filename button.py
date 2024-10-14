@@ -12,7 +12,6 @@ class ButtonFrame:
         self.imagem_agendar = self.carregar_imagem("assets/image_c.png", (80, 80))
         self.imagem_visualizar = self.carregar_imagem("assets/image_v.png", (80, 80))
         self.imagem_cancelar = self.carregar_imagem("assets/image_x.png", (80, 80))
-
         # Botão Agendar com imagem
         self.button_a = ctk.CTkButton(
             self.frame, 
