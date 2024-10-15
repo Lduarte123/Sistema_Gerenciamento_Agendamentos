@@ -60,7 +60,7 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
             self.tree.delete(row)
 
         # Obtém a lista completa de agendamentos
-        agendamentos = self.agendamento_repository.listar_agendamentos()
+        agendamentos = self.agendamento_repository.listar_agendamentos_por_usuario()
         self.total_agendamentos = len(agendamentos)
 
         # Calcula os índices para a página atual

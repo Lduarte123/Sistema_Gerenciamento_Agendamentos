@@ -8,10 +8,11 @@ from repository.agendamento_repository import AgendamentoRepository
 from model.agendamento import AgendamentoModel as Agendamento
 
 class CriarAgendamentoFrame(ctk.CTkFrame):
-    def __init__(self, master, agendamento_model, controller):
+    def __init__(self, master, agendamento_model, controller, usuario_id):
         super().__init__(master)
         self.agendamento_model = agendamento_model
         self.controller = controller
+        self.usuario_id = usuario_id
 
         self.agendamento_repository = AgendamentoRepository()
         self.configure(width=300, height=400)
@@ -67,7 +68,6 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
     def voltar(self):
         self.master.controller.exibir_tela_inicial()
 
-
     def salvar(self):
         nome = self.entrada_nome.get().strip()  # Nome em string
         data = self.calendario.get_date().strip()  # Data em string (MM/DD/AA ou MM/DD/YYYY)
@@ -83,8 +83,8 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
         # Verificação da data e conversão
         try:
             print(f"Data recebida: {data}")  # Depuração
-            
-            # Tentativa de conversão da data para o formato MM/DD/AA ou MM/DD/YYYY
+
+            # Conversão da data para o formato correto
             if len(data.split('/')[-1]) == 2:  # Se o ano tem 2 dígitos
                 data_agendamento = datetime.strptime(data, "%m/%d/%y")  # MM/DD/AA
             else:
@@ -95,7 +95,7 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
             if data_agendamento.date() < data_hora_atual.date():
                 messagebox.showerror("Erro", "A data selecionada já passou.")
                 return
-            
+
             # Verificando se o horário não passou no mesmo dia
             if data_agendamento.date() == data_hora_atual.date() and data_agendamento.time() < data_hora_atual.time():
                 messagebox.showerror("Erro", "O horário selecionado já passou.")
@@ -113,11 +113,18 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
         # Convertendo a data para o formato desejado (DD-MM-AAAA)
         data_formatada = data_agendamento.strftime("%d-%m-%Y")  # Formato como string para o banco de dados
 
-        # Criar o objeto agendamento com strings
-        agendamento = Agendamento(nome=nome, data=data_formatada, horario=horario, local=local, descricao=descricao or "")
+        # Criar o objeto agendamento com o usuário associado
+        agendamento = Agendamento(
+            nome=nome,
+            data=data_formatada,
+            horario=horario,
+            local=local,
+            descricao=descricao or "",
+            usuario_id=self.usuario_id  # Adiciona o ID do usuário
+        )
 
         try:
-            # Salvar o agendamento no banco de dados
+            # Salvar o agendamento no banco de dados, passando o usuario_id
             self.agendamento_repository.salvar_agendamento(agendamento)
 
             # Mostrar mensagem de sucesso
@@ -127,5 +134,9 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
             self.master.controller.exibir_tela_inicial()
 
         except Exception as e:
-            # Em caso de erro ao salvar no banco
-            messagebox.showerror("Erro", f"Ocorreu um erro ao salvar o agendamento: {e}")
+            # Imprimir o erro no console para depuração
+            print(f"Ocorreu um erro ao salvar o agendamento: {e}")
+            
+            # Exibir mensagem de erro na interface
+            messagebox.showerror("Erro", f"Ocorreu um erro ao salvar o agendamento: {str(e)}")
+

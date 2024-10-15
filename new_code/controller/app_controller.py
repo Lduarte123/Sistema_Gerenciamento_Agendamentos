@@ -17,7 +17,7 @@ class AppController:
         self.agendamento_repository = AgendamentoRepository() 
         self.usuario_repo = UsuarioRepository()
         self.main_frame = None
-        self.usuario_id = None  # Adicione esta linha para armazenar o ID do usuário logado
+        self.usuario_id = None  # Armazena o ID do usuário logado
         self.exibir_tela_login()
 
     def exibir_tela_login(self):
@@ -41,7 +41,6 @@ class AppController:
         if self.main_frame:
             self.main_frame.pack_forget()
 
-        from view.button_frame import ButtonFrame
         self.main_frame = ButtonFrame(self.root, self)
         self.main_frame.pack(fill="both", expand=True)
 
@@ -49,14 +48,16 @@ class AppController:
         if self.main_frame:
             self.main_frame.pack_forget()
 
-        self.main_frame = CriarAgendamentoFrame(self.root, self.agendamento_model, self)
+        # Supondo que você tenha um atributo `usuario_id` na sua classe controlador
+        self.main_frame = CriarAgendamentoFrame(self.root, self.agendamento_model, self, self.usuario_id)
         self.main_frame.pack(fill="both", expand=True)
+
 
     def abrir_visualizar_agendamento(self):
         if self.main_frame:
             self.main_frame.pack_forget()
 
-        self.main_frame = VisualizarFrame(self.root, self.agendamento_repository)
+        self.main_frame = VisualizarPerfilFrame(self.root, self.agendamento_repository, self.usuario_id)
         self.main_frame.pack(fill="both", expand=True)
 
     def abrir_visualizar_perfil(self):
@@ -64,14 +65,15 @@ class AppController:
             self.main_frame.pack_forget()
 
         if self.usuario_id is not None:  # Verifica se o usuario_id está definido
-            self.main_frame = VisualizarPerfilFrame(self.root, self.agendamento_repository, self.usuario_id)  # Ajuste para passar o usuario_id
+            # Ajuste para passar apenas os parâmetros corretos
+            self.main_frame = VisualizarPerfilFrame(self.root, self.agendamento_repository, self.usuario_id)
             self.main_frame.pack(fill="both", expand=True)
         else:
             # Lidar com o caso em que o usuario_id não está definido
             print("Erro: usuario_id não está definido.")
 
+            
     def validar_login(self, username, senha):
-        # Aqui você pode definir o usuario_id após validar o login
         usuario = self.usuario_repo.validar_usuario(username, senha)
         if usuario:
             self.usuario_id = usuario.id  # Supondo que usuario.id retorna o ID do usuário
@@ -81,7 +83,6 @@ class AppController:
         if self.main_frame:
             self.main_frame.pack_forget()
 
-        from view.button_frame import ButtonFrame
         self.main_frame = ButtonFrame(self.root, self)
         self.main_frame.pack(fill="both", expand=True)
 

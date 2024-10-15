@@ -1,3 +1,4 @@
+# view/visualizar_perfil.py
 import customtkinter as ctk
 from tkinter import ttk, messagebox
 from repository.agendamento_repository import AgendamentoRepository
@@ -5,7 +6,7 @@ from model.agendamento import AgendamentoModel as Agendamento
 from view.editar_agendamento_view import Editar
 from datetime import datetime
 
-class VisualizarPerfilFrame(ctk.CTkFrame):  # visualização em treeview para o perfil do usuário
+class VisualizarPerfilFrame(ctk.CTkFrame):  # Visualização em treeview para o perfil do usuário
     def __init__(self, master, agendamento_repository, usuario_id):
         super().__init__(master)
         self.agendamento_repository = agendamento_repository
