@@ -1,22 +1,7 @@
-from sqlalchemy import Column, Integer, String, Date, Time, ForeignKey  
-from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from datetime import datetime
-
-Base = declarative_base()
-
-class AgendamentoModel(Base):
-    __tablename__ = 'agendamentos'
-    
-    id = Column(Integer, primary_key=True, autoincrement=True)
-
-    nome = Column(String, nullable=False)
-    data = Column(Date, nullable=False)
-    horario = Column(Time, nullable=False)
-    local = Column(String, nullable=False)
-    descricao = Column(String, nullable=True)
-    usuario_id = Column(Integer, ForeignKey('usuarios.id'))
-    
+from model.models import AgendamentoModel  # Importar de models.py
 
 engine = create_engine('postgresql://postgres:postgres@localhost/senac')
 Session = sessionmaker(bind=engine)

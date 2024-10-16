@@ -10,7 +10,7 @@ class ButtonFrame(ctk.CTkFrame):
         # Carrega as imagens
         self.imagem_agendar = self.carregar_imagem("new_code/assets/image_c.png", (80, 80))
         self.imagem_visualizar = self.carregar_imagem("new_code/assets/image_v.png", (80, 80))
-        self.imagem_perfil = self.carregar_imagem("new_code/assets/image_perfil.png", (80, 80))
+        self.imagem_perfil = self.carregar_imagem("new_code/assets/human.png", (80, 80))
 
         self.botao_frame = ctk.CTkFrame(self, fg_color="transparent")
         self.botao_frame.grid(row=0, column=0, padx=20, pady=20)

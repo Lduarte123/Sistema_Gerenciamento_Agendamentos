@@ -65,12 +65,16 @@ class AppController:
             self.main_frame.pack_forget()
 
         if self.usuario_id is not None:  # Verifica se o usuario_id está definido
-            # Ajuste para passar apenas os parâmetros corretos
-            self.main_frame = VisualizarPerfilFrame(self.root, self.agendamento_repository, self.usuario_id)
-            self.main_frame.pack(fill="both", expand=True)
+            # Obtenha as informações do usuário usando o repositório
+            usuario_info = self.usuario_repo.obter_usuario_por_id(self.usuario_id)  # Ajuste aqui
+            if usuario_info:  # Verifica se o usuário foi encontrado
+                self.main_frame = VisualizarPerfilFrame(self.root, usuario_info)
+                self.main_frame.pack(fill="both", expand=True)
+            else:
+                print("Erro: usuário não encontrado.")
         else:
-            # Lidar com o caso em que o usuario_id não está definido
             print("Erro: usuario_id não está definido.")
+
 
             
     def validar_login(self, username, senha):
