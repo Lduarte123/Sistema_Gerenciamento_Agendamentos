@@ -16,13 +16,15 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         self.total_agendamentos = 0
 
         # Configuração da Treeview
-        self.tree = ttk.Treeview(self, columns=("id", "nome", "data", "horario", "local", "descricao"), show='headings')
-        self.tree.heading("id", text="ID")
-        self.tree.heading("nome", text="Nome")
-        self.tree.heading("data", text="Data")
-        self.tree.heading("horario", text="Horário")
-        self.tree.heading("local", text="Local")
-        self.tree.heading("descricao", text="Descrição")
+        self.tree = ttk.Treeview(self, columns=("id", "nome", "data", "horario", "local", "descricao"), show='headings', height=42)
+
+        # Definindo as colunas e cabeçalhos
+        self.tree.heading("id", text="ID", command=lambda: self.ordenar("id"))
+        self.tree.heading("nome", text="Nome", command=lambda: self.ordenar("nome"))
+        self.tree.heading("data", text="Data", command=lambda: self.ordenar("data"))
+        self.tree.heading("horario", text="Horário", command=lambda: self.ordenar("horario"))
+        self.tree.heading("local", text="Local", command=lambda: self.ordenar("local"))
+        self.tree.heading("descricao", text="Descrição", command=lambda: self.ordenar("descricao"))
 
         self.tree.column("id", width=50)
         self.tree.column("nome", width=200)
@@ -31,7 +33,7 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         self.tree.column("local", width=150)
         self.tree.column("descricao", width=200)
 
-        self.tree.pack(pady=20, fill="both", expand=True)
+        self.tree.pack(pady=20, fill="both", expand=False)
 
         # Frame para os botões
         self.botao_frame = ctk.CTkFrame(self)
@@ -44,10 +46,10 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         self.btn_proximo.pack(side="left", padx=(0, 40))
 
         self.btn_voltar = ctk.CTkButton(self.botao_frame, text="Editar", command=self.editar_agendamento)
-        self.btn_voltar.pack(side="left", padx=(0, 10))  # Margem à direita
+        self.btn_voltar.pack(side="left", padx=(0, 10))
 
         self.btn_fechar = ctk.CTkButton(self.botao_frame, text="Voltar", command=self.voltar)
-        self.btn_fechar.pack(side="left", padx=(0, 10))  # Margem à direita
+        self.btn_fechar.pack(side="left", padx=(0, 10))
 
         self.btn_excluir = ctk.CTkButton(self.botao_frame, text="Excluir", command=self.excluir_agendamento)
         self.btn_excluir.pack(side="left")
@@ -55,13 +57,19 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         # Chama a atualização da tabela após os botões terem sido criados
         self.atualizar_tabela()
 
-    def atualizar_tabela(self):
-    # Limpa a tabela antes de adicionar novos dados
+        # Inicializa a direção de ordenação
+        self.ordenacao_direcao = {coluna: True for coluna in ["id", "nome", "data", "horario", "local", "descricao"]}
+
+    def atualizar_tabela(self, agendamentos=None):
+        """Atualiza a tabela de agendamentos com os dados mais recentes."""
+        # Limpa a tabela antes de adicionar novos dados
         for row in self.tree.get_children():
             self.tree.delete(row)
 
-        # Obtém a lista completa de agendamentos
-        agendamentos = self.agendamento_repository.listar_agendamentos_por_usuario(self.usuario_id)
+        # Obtém a lista completa de agendamentos, se não for fornecida
+        if agendamentos is None:
+            agendamentos = self.agendamento_repository.listar_agendamentos_por_usuario(self.usuario_id)
+
         self.total_agendamentos = len(agendamentos)
 
         # Calcula os índices para a página atual
@@ -87,9 +95,6 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
             else:
                 horario_formatado = agendamento.horario.strftime("%H:%M")  # Formata o horário
 
-            # Exibe os dados para debug
-            print(f"ID: {agendamento.id}, Nome: {agendamento.nome}, Data: {data_formatada}, Horário: {horario_formatado}, Local: {agendamento.local}, Descrição: {agendamento.descricao}")
-
             # Insere os dados formatados na tabela, incluindo a descrição
             self.tree.insert('', 'end', values=(agendamento.id, agendamento.nome, data_formatada, horario_formatado, agendamento.local, agendamento.descricao if agendamento.descricao else "N/A"))  # Exibe "N/A" se descrição for vazia
 
@@ -97,6 +102,29 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         self.btn_anterior.configure(state="normal" if self.pagina_atual > 0 else "disabled")
         self.btn_proximo.configure(state="normal" if fim < self.total_agendamentos else "disabled")
 
+    def ordenar(self, coluna):
+        """Ordena a Treeview com base na coluna selecionada."""
+        # Alterna a direção de ordenação
+        self.ordenacao_direcao[coluna] = not self.ordenacao_direcao[coluna]
+
+        # Obtém a lista completa de agendamentos
+        agendamentos = self.agendamento_repository.listar_agendamentos_por_usuario(self.usuario_id)
+
+        # Verifica o tipo de coluna e define a chave de ordenação
+        if coluna == "data":
+            # Para data, verifica se já é um objeto datetime.date
+            agendamentos.sort(key=lambda x: x.data if isinstance(x.data, datetime) else datetime.strptime(x.data, "%d-%m-%Y"), reverse=self.ordenacao_direcao[coluna])
+        elif coluna == "horario":
+            # Para horário, converte para um objeto de hora
+            agendamentos.sort(key=lambda x: datetime.strptime(x.horario, "%H:%M"), reverse=self.ordenacao_direcao[coluna])
+        else:
+            # Para outras colunas, utiliza o atributo diretamente
+            agendamentos.sort(key=lambda x: getattr(x, coluna), reverse=self.ordenacao_direcao[coluna])
+
+        # Atualiza a tabela com a lista ordenada
+        self.total_agendamentos = len(agendamentos)
+        self.pagina_atual = 0  # Reseta para a primeira página após a ordenação
+        self.atualizar_tabela(agendamentos)  # Atualiza a tabela com os agendamentos ordenados
 
     def editar_agendamento(self):
         selected_item = self.tree.selection()

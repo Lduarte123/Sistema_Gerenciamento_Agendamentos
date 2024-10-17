@@ -45,4 +45,26 @@ class UsuarioRepository:
     
     def obter_usuario_por_id(self, usuario_id):
         return self.session.query(UsuarioModel).filter_by(id=usuario_id).first()
+    
+    def atualizar_usuario(self, usuario_id, nome, email, cidade, sexo, senha):
+        """Atualiza os dados do usuário no banco de dados."""
+        try:
+            usuario = self.session.query(UsuarioModel).filter_by(id=usuario_id).first()
+            if usuario:
+                usuario.nome = nome
+                usuario.email = email
+                usuario.cidade = cidade
+                usuario.sexo = sexo
+                usuario.senha = senha  # Considere hash a senha se necessário
+
+                self.session.commit()  # Confirma as alterações
+                return True
+            else:
+                print("Usuário não encontrado.")  # Para depuração
+                return False
+        except Exception as e:
+            print(f"Erro ao atualizar usuário: {e}")  # Log do erro
+            self.session.rollback()  # Reverter alterações em caso de erro
+            return False
+
 

@@ -9,7 +9,7 @@ class Editar(ctk.CTkToplevel):
         self.callback = callback
 
         self.title("Editar Agendamento")
-        self.geometry("300x300")
+        self.geometry("300x400")
 
         self.label_nome = ctk.CTkLabel(self, text="Nome:")
         self.label_nome.pack(pady=5)
@@ -27,6 +27,7 @@ class Editar(ctk.CTkToplevel):
         self.label_horario.pack(pady=5)
         self.entry_horario = ctk.CTkEntry(self)
         self.entry_horario.insert(0, self.agendamento.horario)
+        self.entry_horario.pack(pady=5)
 
         self.label_local = ctk.CTkLabel(self, text="Local:")
         self.label_local.pack(pady=5)
