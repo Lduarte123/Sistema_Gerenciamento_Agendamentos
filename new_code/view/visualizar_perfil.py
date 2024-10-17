@@ -197,3 +197,10 @@ class VisualizarPerfilFrame(ctk.CTkFrame):
         janela_edicao.destroy()
 
 
+        # obrigado
+        # Marcos
+        # Caua
+        # Lucas
+        # Lucas duart
+
+
