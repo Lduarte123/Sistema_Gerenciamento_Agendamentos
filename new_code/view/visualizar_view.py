@@ -6,9 +6,10 @@ from view.editar_agendamento_view import Editar
 from datetime import datetime
 
 class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
-    def __init__(self, master, agendamento_repository):
+    def __init__(self, master, agendamento_repository, usuario_id):
         super().__init__(master)
         self.agendamento_repository = agendamento_repository
+        self.usuario_id = usuario_id
 
         self.pagina_atual = 0
         self.itens_por_pagina = 40
@@ -60,7 +61,7 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
             self.tree.delete(row)
 
         # Obtém a lista completa de agendamentos
-        agendamentos = self.agendamento_repository.listar_agendamentos_por_usuario()
+        agendamentos = self.agendamento_repository.listar_agendamentos_por_usuario(self.usuario_id)
         self.total_agendamentos = len(agendamentos)
 
         # Calcula os índices para a página atual
@@ -69,16 +70,13 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         agendamentos_pagina = agendamentos[inicio:fim]
 
         for agendamento in agendamentos_pagina:
-            # Verifica se agendamento.data é uma string e converte
             if isinstance(agendamento.data, str):
                 try:
-                    # Primeiro tenta converter se estiver no formato YYYY-MM-DD
                     data_agendamento = datetime.strptime(agendamento.data, "%Y-%m-%d")
                 except ValueError:
-                    # Se falhar, assume que está no formato DD-MM-YYYY
                     data_agendamento = datetime.strptime(agendamento.data, "%d-%m-%Y")
             else:
-                data_agendamento = agendamento.data  # Presume que já é um objeto datetime
+                data_agendamento = agendamento.data
 
             # Formata a data corretamente como string
             data_formatada = data_agendamento.strftime("%d-%m-%Y")  # Formato dd-mm-aaaa

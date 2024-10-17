@@ -1,7 +1,7 @@
 import sys
 import os
 import customtkinter as ctk
-# Adiciona o diretório principal ao sys.path
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from controller.app_controller import AppController
