@@ -1,19 +1,7 @@
-from sqlalchemy import Column, Integer, String, Date, Time
-from sqlalchemy.orm import declarative_base, sessionmaker
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 from datetime import datetime
-
-Base = declarative_base()
-
-class AgendamentoModel(Base):
-    __tablename__ = 'agendamentos'
-    
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    nome = Column(String, nullable=False)
-    data = Column(Date, nullable=False)
-    horario = Column(Time, nullable=False)
-    local = Column(String, nullable=False)
-    descricao = Column(String, nullable=True)
+from model.models import AgendamentoModel  # Importar de models.py
 
 engine = create_engine('postgresql://postgres:postgres@localhost/senac')
 Session = sessionmaker(bind=engine)
@@ -38,7 +26,8 @@ class AgendamentoRepository:
             data=data,
             horario=horario,
             local=agendamento.local,
-            descricao=agendamento.descricao
+            descricao=agendamento.descricao,
+            usuario_id=agendamento.usuario_id  # Atribuir o usuario_id
         )
 
         self.session.add(novo_agendamento)
@@ -65,3 +54,6 @@ class AgendamentoRepository:
 
     def fechar_conexao(self):
         self.session.close()
+
+    def listar_agendamentos_por_usuario(self, usuario_id):
+        return self.session.query(AgendamentoModel).filter(AgendamentoModel.usuario_id == usuario_id).all()
