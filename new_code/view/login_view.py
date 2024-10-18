@@ -1,4 +1,6 @@
 import customtkinter as ctk
+from  tkinter import messagebox
+
 
 class LoginView(ctk.CTkFrame):
     def __init__(self, root, controller):
@@ -48,6 +50,7 @@ class LoginView(ctk.CTkFrame):
             print("Login bem-sucedido")
             self.controller.exibir_tela_inicial()
         else:
+            messagebox.showerror("Erro", "Credenciais Inválidas")
             print("Usuário ou senha incorretos")
 
     def open_register(self):
