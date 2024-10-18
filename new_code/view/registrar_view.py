@@ -12,7 +12,7 @@ class RegisterView(ctk.CTkFrame):
         
         # Título
         self.label = ctk.CTkLabel(self, text="Registrar Novo Usuário", font=ctk.CTkFont(size=20, weight="bold"))
-        self.label.pack(pady=(160, 20))
+        self.label.pack(pady=(35, 20))
 
         # Criação de um frame para o formulário, centralizando ele
         form_frame = ctk.CTkFrame(self, fg_color="transparent")

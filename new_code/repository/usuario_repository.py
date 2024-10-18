@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from model.models import UsuarioModel  # Importar de models.py
 
-engine = create_engine('postgresql://postgres:postgres@localhost/senac')
+engine = create_engine('postgresql://postgres:postgres@localhost/postgres')
 Session = sessionmaker(bind=engine)
 
 class UsuarioRepository:

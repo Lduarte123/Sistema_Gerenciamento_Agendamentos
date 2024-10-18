@@ -86,9 +86,9 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
 
             # Conversão da data para o formato correto
             if len(data.split('/')[-1]) == 2:  # Se o ano tem 2 dígitos
-                data_agendamento = datetime.strptime(data, "%m/%d/%y")  # MM/DD/AA
+                data_agendamento = datetime.strptime(data, "%d/%m/%y")  # MM/DD/AA
             else:
-                data_agendamento = datetime.strptime(data, "%m/%d/%Y")  # MM/DD/YYYY
+                data_agendamento = datetime.strptime(data, "%d/%m/%Y")  # MM/DD/YYYY
 
             # Verificando se a data não está no passado
             data_hora_atual = datetime.now()
@@ -102,7 +102,7 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
                 return
 
         except ValueError:
-            messagebox.showerror("Erro", "Formato de data inválido. Use MM/DD/AAAA ou MM/DD/AA.")
+            messagebox.showerror("Erro", "Formato de data inválido. Use DD/MM/AAAA.")
             return
 
         # Validação para garantir que os campos obrigatórios estejam preenchidos

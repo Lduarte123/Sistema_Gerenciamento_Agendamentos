@@ -16,7 +16,7 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         self.total_agendamentos = 0
 
         # Configuração da Treeview
-        self.tree = ttk.Treeview(self, columns=("id", "nome", "data", "horario", "local", "descricao"), show='headings', height=42)
+        self.tree = ttk.Treeview(self, columns=("id", "nome", "data", "horario", "local", "descricao"), show='headings', height=27)
 
         # Definindo as colunas e cabeçalhos
         self.tree.heading("id", text="ID", command=lambda: self.ordenar("id"))
