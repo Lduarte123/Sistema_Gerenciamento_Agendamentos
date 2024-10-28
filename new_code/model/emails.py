@@ -3,6 +3,8 @@ import smtplib
 from email.mime.text import MIMEText
 from datetime import datetime
 from tkinter import simpledialog
+from view.validar_codigo_view import ValidarCodigoWindow
+
 
 class VerificacaoEmail:
     def __init__(self, email_usuario):
@@ -30,10 +32,19 @@ class VerificacaoEmail:
             server.login('projetodeagendamentos@gmail.com', 'xaqh roat ndyq ajol')
             server.send_message(msg)
 
-    def solicitar_codigo_verificacao(self):
+    def solicitar_codigo_verificacao(self, master):
         self.gerar_codigo()
         self.enviar_email()
-        return simpledialog.askinteger("Código de Verificação", "Digite o código enviado para seu e-mail:")
+        
+        janela = ValidarCodigoWindow(master, "Código de Verificação", "Digite o código enviado para seu e-mail:")
+        janela.grab_set()
+        master.wait_window(janela) 
+        
+
+        return janela.get_result()
 
     def validar_codigo(self, codigo_inserido):
-        return codigo_inserido == self.codigo
+        if self.codigo is not None and codigo_inserido is not None:
+            return str(codigo_inserido) == str(self.codigo)
+        return False
+    

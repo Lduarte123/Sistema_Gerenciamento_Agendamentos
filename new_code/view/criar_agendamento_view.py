@@ -115,7 +115,7 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
         # Convertendo a data para o formato desejado (DD-MM-AAAA)
         data_formatada = data_agendamento.strftime("%d-%m-%Y")  # Formato como string para o banco de dados
 
-        codigo_inserido = self.verificacao_email.solicitar_codigo_verificacao()
+        codigo_inserido = self.verificacao_email.solicitar_codigo_verificacao(self.master)
         if codigo_inserido is None or not self.verificacao_email.validar_codigo(codigo_inserido):
             messagebox.showerror("Erro", "Código de verificação inválido.")
             return
