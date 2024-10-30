@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from  tkinter import messagebox
+from model.emails import VerificacaoEmail
 
 
 class LoginView(ctk.CTkFrame):
@@ -10,6 +11,7 @@ class LoginView(ctk.CTkFrame):
         # Configurações do frame principal
         self.pack(expand=True)
 
+        self.verificacao_email = VerificacaoEmail(self.controller.usuario_logado_email()) # USAR EM LOGIN PARA CRIAR VALIDAÇÃO EM DUAS ETAPAS
         # Título do Login
         self.title_label = ctk.CTkLabel(self, text="Login", font=("Arial", 24, "bold"))
         self.title_label.pack(pady=(200, 70))
@@ -45,6 +47,11 @@ class LoginView(ctk.CTkFrame):
     def login(self):
         username = self.username_entry.get()
         password = self.password_entry.get()
+
+        codigo_inserido = self.verificacao_email.solicitar_codigo_verificacao(self.master) # USAR EM LOGIN PARA CRIAR VALIDAÇÃO EM DUAS ETAPAS
+        if codigo_inserido is None or not self.verificacao_email.validar_codigo(codigo_inserido): # USAR EM LOGIN PARA CRIAR VALIDAÇÃO EM DUAS ETAPAS
+            messagebox.showerror("Erro", "Código de verificação inválido.")
+            return
 
         if self.controller.validar_login(username, password):
             print("Login bem-sucedido")

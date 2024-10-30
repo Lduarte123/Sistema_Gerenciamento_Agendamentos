@@ -4,7 +4,7 @@ from email.mime.text import MIMEText
 from datetime import datetime
 from tkinter import simpledialog
 from view.validar_codigo_view import ValidarCodigoWindow
-
+from util.constantes import Contante
 
 class VerificacaoEmail:
     def __init__(self, email_usuario):
@@ -20,7 +20,7 @@ class VerificacaoEmail:
     # Email de Verificação
     def enviar_email(self):
         if self.codigo is None:
-            raise ValueError("Código não gerado.")
+            raise ValueError(Contante.CODIGO_NAO_GERADO)
         
         msg = MIMEText(f"Seu código de verificação é: {self.codigo}")
         msg['Subject'] = 'Código de Verificação'
