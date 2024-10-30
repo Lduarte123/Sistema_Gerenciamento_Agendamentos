@@ -49,9 +49,9 @@ class LoginView(ctk.CTkFrame):
         if self.controller.validar_login(username, password):
             print("Login bem-sucedido")
             self.controller.exibir_tela_inicial()
-        else:
-            messagebox.showerror("Erro", "Credenciais Inválidas")
-            print("Usuário ou senha incorretos")
+            return
+        messagebox.showerror("Erro", "Credenciais Inválidas")
+        print("Usuário ou senha incorretos")
 
     def open_register(self):
         self.controller.exibir_tela_registro()
