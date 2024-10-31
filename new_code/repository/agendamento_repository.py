@@ -1,10 +1,13 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
-from model.models import AgendamentoModel  # Importar de models.py
+from model.models import AgendamentoModel, Base  # Importar de models.py
 
-engine = create_engine('postgresql://postgres:postgres@localhost/senac')
+engine = create_engine('postgresql://postgres:123@localhost/postgres')
+Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
+
+
 
 class AgendamentoRepository:
     def __init__(self):
