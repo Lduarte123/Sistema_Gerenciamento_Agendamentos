@@ -15,7 +15,19 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         self.itens_por_pagina = 40
         self.total_agendamentos = 0
 
-        # Configuração da Treeview
+        
+        self.pesquisa_frame = ctk.CTkFrame(self)
+        self.pesquisa_frame.pack(pady=(20, 10))  # Adiciona algum espaço ao redor
+
+
+        self.entry_pesquisa = ctk.CTkEntry(self.pesquisa_frame, placeholder_text="Digite sua pesquisa aqui", width=300)
+        self.entry_pesquisa.pack(side="left", padx=(20, 10))  # Ajusta o espaçamento do entry
+                # Configuração da Treeview
+        self.btn_filtro = ctk.CTkButton(self.pesquisa_frame, text="Pesquisa", command=self.filtro_de_pesquisa)
+        self.btn_filtro.pack(side="left", padx=(10, 20))  # Ajusta o espaçamento do botão
+
+        # Campo de entrada para pesquisa
+        
         self.tree = ttk.Treeview(self, columns=("id", "nome", "data", "horario", "local", "descricao", "status"), show='headings', height=42)
 
         # Definindo as colunas e cabeçalhos
@@ -39,8 +51,13 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         self.tree.pack(pady=20, fill="both", expand=False)
 
         # Frame para os botões
+        # Frame para os botões
         self.botao_frame = ctk.CTkFrame(self)
         self.botao_frame.pack(pady=10)
+
+        # Botão de pesquisa (movido para a parte superior)
+        # self.btn_filtro = ctk.CTkButton(self, text="Pesquisa", command=self.filtro_de_pesquisa)
+        # self.btn_filtro.pack(side="top", padx=(20, 30), pady=(20, 10))  # Adicionei margens para espaçamento
 
         self.btn_anterior = ctk.CTkButton(self.botao_frame, text="Anterior", command=self.pagina_anterior)
         self.btn_anterior.pack(side="left", padx=(0, 10))
@@ -60,7 +77,7 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         self.btn_cancelar = ctk.CTkButton(self.botao_frame, text="Cancelar Agendamento", command=self.cancelar_agendamento)
         self.btn_cancelar.pack(side="left", padx=(10, 20))
 
-        # Chama a atualização da tabela após os botões terem sido criados
+                # Chama a atualização da tabela após os botões terem sido criados
         self.atualizar_tabela()
 
         # Inicializa a direção de ordenação
@@ -211,3 +228,6 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         if (self.pagina_atual + 1) * self.itens_por_pagina < self.total_agendamentos:
             self.pagina_atual += 1
             self.atualizar_tabela()
+    
+    def filtro_de_pesquisa(self):
+        pass
