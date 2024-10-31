@@ -1,13 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
-from model.models import AgendamentoModel, Base  # Importar de models.py
+from model.models import AgendamentoModel  # Importar de models.py
 
 engine = create_engine('postgresql://postgres:123@localhost/postgres')
-Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
-
-
 
 class AgendamentoRepository:
     def __init__(self):
@@ -61,7 +58,7 @@ class AgendamentoRepository:
 
     def listar_agendamentos_por_usuario(self, usuario_id):
         return self.session.query(AgendamentoModel).filter(AgendamentoModel.usuario_id == usuario_id).all()
-    
+
     def cancelar_agendamento(self, agendamento_id):
         agendamento = self.session.query(AgendamentoModel).filter_by(id=agendamento_id).first()
         agendamento.status = "Cancelado"

@@ -5,6 +5,7 @@ from tkinter import Toplevel, messagebox
 from datetime import datetime
 
 
+
 class RegisterView(ctk.CTkFrame):
     def __init__(self, root, controller):
         super().__init__(root)
@@ -71,106 +72,61 @@ class RegisterView(ctk.CTkFrame):
         self.back_button.pack(pady=10)
 
     def open_calendar(self):
-        """Abre uma janela com um calendário para selecionar a data de nascimento."""
         self.calendar_window = Toplevel(self)
-        self.calendar = Calendar(self.calendar_window, selectmode='day', year=2023, month=10, day=5)
+        self.calendar = Calendar(
+            self.calendar_window,
+            selectmode='day',
+            year=2023,
+            month=10,
+            day=5,
+            date_pattern="dd/mm/yyyy"  # Configuração do formato
+        )
         self.calendar.pack(pady=20)
 
         select_button = ctk.CTkButton(self.calendar_window, text="Selecionar", command=self.select_date)
         select_button.pack(pady=10)
 
-    # def select_date(self):
-    #     """Obtém a data selecionada e fecha o calendário."""
-    #     selected_date = self.calendar.get_date()
-    #     self.data_nasc_var.set(selected_date)
-    #     self.calendar_window.destroy()
-
-
-
     def select_date(self):
-        """Obtém a data selecionada e fecha o calendário."""
-        selected_date = self.calendar.get_date()  # Exemplo: '10/2/23' ou '10/02/2023'
-        print(f"Data selecionada: {selected_date}")  # Para depuração
-
-        # Tenta converter a data para o formato DD-MM-AAAA
+        selected_date = self.calendar.get_date()
         try:
-            # Aceitando formatos de dois e quatro dígitos para o ano
-            valid_date = datetime.strptime(selected_date, "%d-%m-%y")  # Para '10/2/23'
-        except ValueError:
-            try:
-                valid_date = datetime.strptime(selected_date, "%d-%m-%Y")  # Para '10/02/2023'
-            except ValueError:
-                messagebox.showerror("Erro", "Formato de data inválido. Por favor, use dia/mês/ano.")
+            valid_date = datetime.strptime(selected_date, "%d/%m/%Y")
+            # Verifica se a data selecionada é no futuro
+            if valid_date.date() > datetime.now().date():
+                messagebox.showerror("Erro", "A data de nascimento não pode ser no futuro.")
                 return
-
-        formatted_date = valid_date.strftime("%d-%m-%Y")  # Formata para DD-MM-AAAA
-        self.data_nasc_var.set(formatted_date)  # Armazena a data como string
-        print(f"Data formatada: {formatted_date}")  # Para depuração
-        self.calendar_window.destroy()
-
-
-    def select_date(self):
-        """Obtém a data selecionada e fecha o calendário."""
-        selected_date = self.calendar.get_date()  # Exemplo: '10/3/23'
-        print(f"Data selecionada: {selected_date}")  # Para depuração
-
-        # Tenta converter a data para o formato DD-MM-AAAA
-        try:
-            valid_date = datetime.strptime(selected_date, "%d/%m/%y")  # Para '10/3/23'
         except ValueError:
-            try:
-                valid_date = datetime.strptime(selected_date, "%d/%m/%Y")  # Para '10/03/2023'
-            except ValueError:
-                messagebox.showerror("Erro", "Formato de data inválido. Por favor, use dia/mês/ano.")
-                return
+            messagebox.showerror("Erro", "Formato de data inválido. Por favor, selecione uma data válida.")
+            return
 
-        # Inverte dia e mês
-        inverted_date = valid_date.strftime("%d/%m/%Y")  # Formata para MM-DD-AAAA
-        self.data_nasc_var.set(inverted_date)  # Armazena a data como string
-        print(f"Data invertida: {inverted_date}")  # Para depuração
+        self.data_nasc_var.set(selected_date)
+        print(f"Data registrada: {selected_date}")
         self.calendar_window.destroy()
 
     def register(self):
         nome = self.nome_entry.get()
         senha = self.senha_entry.get()
         email = self.email_entry.get()
-        data_nasc = self.data_nasc_var.get()  # data no formato DD-MM-AAAA
+        data_nasc = self.data_nasc_var.get()
         cidade = self.cidade_entry.get()
         sexo = self.sexo_entry.get()
 
-        emails_cadastrados = self.controller.obter_emails_cadastrados()
-
+        # Verifica se todos os campos estão preenchidos
         if not all([nome, senha, email, data_nasc, cidade, sexo]):
             messagebox.showerror("Erro", "Todos os campos são obrigatórios. Por favor, preencha todos os campos.")
             return
 
-        if not self.termos_var.get():
-            messagebox.showerror("Erro", "Você deve aceitar os termos e condições para se registrar.")
-            return
-        
+        # Verifica se o e-mail já está cadastrado
+        emails_cadastrados = self.controller.obter_emails_cadastrados()
         if email in emails_cadastrados:
             messagebox.showerror("Erro", "Erro ao registrar usuário: o e-mail já está em uso.")
             return
 
-        print(f"Data a ser registrada: {data_nasc}")  # Para depuração
-
-        try:
-            # Valida a data no formato DD-MM-AAAA
-            valid_date = datetime.strptime(data_nasc, "%d/%m/%Y")
-            if valid_date > datetime.now():
-                raise ValueError("A data não pode ser no futuro.")
-        except ValueError:
-            messagebox.showerror("Erro", "Data inválida. Por favor, insira uma data válida no formato dia-mês-ano (DD/MM/AAAA).")
-            return
-
-        # Chama o método registrar_usuario com todos os parâmetros
         resultado = self.controller.registrar_usuario(nome, email, senha, data_nasc, cidade, sexo)
         if resultado:
             messagebox.showinfo("Sucesso", "Usuário registrado com sucesso!")
             self.voltar()
         else:
             messagebox.showerror("Erro", "Erro ao registrar usuário. Verifique suas informações.")
-
 
     def voltar(self):
         self.controller.exibir_tela_login()
