@@ -16,7 +16,7 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         self.total_agendamentos = 0
 
         # Configuração da Treeview
-        self.tree = ttk.Treeview(self, columns=("id", "nome", "data", "horario", "local", "descricao"), show='headings', height=42)
+        self.tree = ttk.Treeview(self, columns=("id", "nome", "data", "horario", "local", "descricao", "status"), show='headings', height=42)
 
         # Definindo as colunas e cabeçalhos
         self.tree.heading("id", text="ID", command=lambda: self.ordenar("id"))
@@ -25,6 +25,8 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         self.tree.heading("horario", text="Horário", command=lambda: self.ordenar("horario"))
         self.tree.heading("local", text="Local", command=lambda: self.ordenar("local"))
         self.tree.heading("descricao", text="Descrição", command=lambda: self.ordenar("descricao"))
+        self.tree.heading("status", text="Status", command=lambda: self.ordenar("status"))
+
 
         self.tree.column("id", width=50)
         self.tree.column("nome", width=200)
@@ -32,6 +34,7 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         self.tree.column("horario", width=100)
         self.tree.column("local", width=150)
         self.tree.column("descricao", width=200)
+        self.tree.column("status", width=200) #Adicionei coluna status
 
         self.tree.pack(pady=20, fill="both", expand=False)
 
@@ -54,11 +57,14 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         self.btn_excluir = ctk.CTkButton(self.botao_frame, text="Excluir", command=self.excluir_agendamento)
         self.btn_excluir.pack(side="left")
 
+        self.btn_cancelar = ctk.CTkButton(self.botao_frame, text="Cancelar Agendamento", command=self.cancelar_agendamento)
+        self.btn_cancelar.pack(side="left", padx=(10, 20))
+
         # Chama a atualização da tabela após os botões terem sido criados
         self.atualizar_tabela()
 
         # Inicializa a direção de ordenação
-        self.ordenacao_direcao = {coluna: True for coluna in ["id", "nome", "data", "horario", "local", "descricao"]}
+        self.ordenacao_direcao = {coluna: True for coluna in ["id", "nome", "data", "horario", "local", "descricao", "status"]}
 
     def atualizar_tabela(self, agendamentos=None):
         """Atualiza a tabela de agendamentos com os dados mais recentes."""
@@ -96,7 +102,7 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
                 horario_formatado = agendamento.horario.strftime("%H:%M")  # Formata o horário
 
             # Insere os dados formatados na tabela, incluindo a descrição
-            self.tree.insert('', 'end', values=(agendamento.id, agendamento.nome, data_formatada, horario_formatado, agendamento.local, agendamento.descricao if agendamento.descricao else "N/A"))  # Exibe "N/A" se descrição for vazia
+            self.tree.insert('', 'end', values=(agendamento.id, agendamento.nome, data_formatada, horario_formatado, agendamento.local, agendamento.descricao, agendamento.status))
 
         # Atualiza o estado dos botões de navegação
         self.btn_anterior.configure(state="normal" if self.pagina_atual > 0 else "disabled")
@@ -149,14 +155,15 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
     def voltar(self):
         self.master.controller.exibir_tela_inicial()
 
-    def atualizar_agendamento_dados(self, novo_nome, nova_data, novo_horario, novo_local, nova_descricao=""):
+    def atualizar_agendamento_dados(self, novo_nome, nova_data, novo_horario, novo_local, nova_descricao="", novo_status=""):
         agendamento_atualizado = Agendamento(
             id=self.tree.item(self.tree.selection(), "values")[0],
             nome=novo_nome,
             data=nova_data,
             horario=novo_horario,
             local=novo_local,
-            descricao=nova_descricao
+            descricao=nova_descricao,
+            status=novo_status
         )
 
         self.agendamento_repository.atualizar_agendamento(agendamento_atualizado)
@@ -173,6 +180,21 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
                 self.atualizar_tabela()
                 return
         messagebox.showerror("Erro", "Selecione um agendamento para excluir.")
+
+    def cancelar_agendamento(self):
+        selected_item = self.tree.selection()
+        if selected_item:
+            confirmation = messagebox.askyesno("Confirmar Cancelamento", "Tem certeza que deseja cancelar este agendamento?")
+            if confirmation:
+                agendamento_id = self.get_agendamento_id()
+                # Realiza o cancelamento no banco de dados
+                self.agendamento_repository.cancelar_agendamento(agendamento_id)
+                messagebox.showinfo("Sucesso", "Agendamento cancelado com sucesso!")
+                # Atualiza a tabela para que o agendamento cancelado não apareça mais
+                self.atualizar_tabela()
+                return
+        else:
+            messagebox.showerror("Erro", "Selecione um agendamento para cancelar.")
 
     def get_agendamento_id(self):
         selected_item = self.tree.selection()

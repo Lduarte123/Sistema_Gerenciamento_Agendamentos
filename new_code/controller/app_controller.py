@@ -93,3 +93,8 @@ class AppController:
     def obter_emails_cadastrados(self):
         """Obtém todos os e-mails cadastrados no banco de dados."""
         return self.usuario_repo.obter_emails_cadastrados()
+    
+    def usuario_logado_email(self):
+        usuario_id = self.usuario_id  # Usa o ID do usuário logado
+        return self.usuario_repo.obter_usuario_logado_email(usuario_id)
+
