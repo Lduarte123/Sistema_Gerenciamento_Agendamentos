@@ -1,5 +1,5 @@
 import customtkinter as ctk
-from  tkinter import messagebox
+from tkinter import messagebox
 from model.emails import VerificacaoEmail
 
 
@@ -8,39 +8,32 @@ class LoginView(ctk.CTkFrame):
         super().__init__(root)
         self.controller = controller
 
-        # Configurações do frame principal
         self.pack(expand=True)
 
-        self.verificacao_email = VerificacaoEmail(self.controller.usuario_logado_email()) # USAR EM LOGIN PARA CRIAR VALIDAÇÃO EM DUAS ETAPAS
         # Título do Login
         self.title_label = ctk.CTkLabel(self, text="Login", font=("Arial", 24, "bold"))
         self.title_label.pack(pady=(200, 70))
 
-        # Frame para os campos de entrada (com borda e cantos arredondados)
         self.entry_frame = ctk.CTkFrame(self, border_width=2, border_color="gray", fg_color="#1C1C1C", corner_radius=10, width=340, height=200)
         self.entry_frame.pack(pady=10)
 
         self.entry_frame.grid_propagate(False)
 
-        # Label e campo de entrada de email
         self.username_label = ctk.CTkLabel(self.entry_frame, text="Email:", font=("Arial", 14, "bold"))
         self.username_label.grid(row=0, column=0, sticky='w', padx=22, pady=(10,5))
 
         self.username_entry = ctk.CTkEntry(self.entry_frame, placeholder_text="Digite seu email", width=300, height=40)
         self.username_entry.grid(row=1, column=0, padx=17, pady=5)
 
-        # Label e campo de entrada de senha
         self.password_label = ctk.CTkLabel(self.entry_frame, text="Senha:", font=("Arial", 14, "bold"))
         self.password_label.grid(row=2, column=0, sticky='w', padx=22, pady=5)
 
         self.password_entry = ctk.CTkEntry(self.entry_frame, placeholder_text="Digite sua senha", show="*", width=300, height=40)
         self.password_entry.grid(row=3, column=0, padx=17, pady=5)
 
-        # Botão de login
         self.login_button = ctk.CTkButton(self, text="Entrar", command=self.login, width=300, height=40)
-        self.login_button.pack(pady=(20, 5))  # Margem vertical
+        self.login_button.pack(pady=(20, 5)) 
 
-        # Botão de registro
         self.register_button = ctk.CTkButton(self, text="Registrar Novo Usuário", command=self.open_register, width=300, height=40)
         self.register_button.pack(pady=10)
 
@@ -48,17 +41,15 @@ class LoginView(ctk.CTkFrame):
         username = self.username_entry.get()
         password = self.password_entry.get()
 
-        codigo_inserido = self.verificacao_email.solicitar_codigo_verificacao(self.master) # USAR EM LOGIN PARA CRIAR VALIDAÇÃO EM DUAS ETAPAS
-        if codigo_inserido is None or not self.verificacao_email.validar_codigo(codigo_inserido): # USAR EM LOGIN PARA CRIAR VALIDAÇÃO EM DUAS ETAPAS
-            messagebox.showerror("Erro", "Código de verificação inválido.")
-            return
-
         if self.controller.validar_login(username, password):
-            print("Login bem-sucedido")
+            self.verificacao_email = VerificacaoEmail(self.controller.usuario_logado_email())
+            codigo_inserido = self.verificacao_email.solicitar_codigo_verificacao(self.master)
+            if codigo_inserido is None or not self.verificacao_email.validar_codigo(codigo_inserido):
+                messagebox.showerror("Erro", "Código de verificação inválido.")
+                return
             self.controller.exibir_tela_inicial()
             return
         messagebox.showerror("Erro", "Credenciais Inválidas")
-        print("Usuário ou senha incorretos")
 
     def open_register(self):
         self.controller.exibir_tela_registro()
