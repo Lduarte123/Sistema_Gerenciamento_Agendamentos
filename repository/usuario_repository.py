@@ -4,11 +4,14 @@ from datetime import datetime
 from model.models import UsuarioModel
 from util.constantes import Constante
 from util.data_base_cfg import Config
+from model.models import Base
 
 constante = Constante()
 config = Config()
 
+
 engine = create_engine(config.get_cfg())
+Base.metadata.create_all(engine)
 Session = sessionmaker(bind=engine)
 
 class UsuarioRepository:

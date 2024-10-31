@@ -34,3 +34,5 @@ class AgendamentoModel(Base):
     
     usuario_id = Column(Integer, ForeignKey('usuarios.id', ondelete='CASCADE'), nullable=False)
     usuario = relationship('UsuarioModel', back_populates='agendamentos')
+
+
