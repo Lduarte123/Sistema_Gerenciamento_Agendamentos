@@ -1,7 +1,7 @@
 import customtkinter as ctk
 from tkinter import ttk, messagebox
 from repository.agendamento_repository import AgendamentoRepository
-from model.agendamento import AgendamentoModel as Agendamento
+from model.models import AgendamentoModel as Agendamento
 from view.editar_agendamento_view import Editar
 from datetime import datetime
 

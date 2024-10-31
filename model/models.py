@@ -1,10 +1,14 @@
 from sqlalchemy import Column, Integer, String, Date, Time, ForeignKey
 from sqlalchemy.orm import declarative_base, relationship
+from util.constantes import Constante
+
+constante = Constante()
+
 
 Base = declarative_base()
 
 class UsuarioModel(Base):
-    __tablename__ = 'usuarios'
+    __tablename__ = constante.get_tabela_usuarios()
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     nome = Column(String, nullable=False)
@@ -14,12 +18,11 @@ class UsuarioModel(Base):
     cidade = Column(String, nullable=False)
     sexo = Column(String, nullable=False)
 
-    # Relacionamento com Agendamento
     agendamentos = relationship('AgendamentoModel', back_populates='usuario', cascade="all, delete-orphan")
 
 
 class AgendamentoModel(Base):
-    __tablename__ = 'agendamentos'
+    __tablename__ = constante.get_tabela_agendamentos()
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     nome = Column(String, nullable=False)
@@ -27,8 +30,7 @@ class AgendamentoModel(Base):
     horario = Column(Time, nullable=False)
     local = Column(String, nullable=False)
     descricao = Column(String, nullable=True)
-    status = Column(String, nullable=False)
+    status = Column(String, nullable=True)
     
-    # Chave estrangeira para Usuario
     usuario_id = Column(Integer, ForeignKey('usuarios.id', ondelete='CASCADE'), nullable=False)
     usuario = relationship('UsuarioModel', back_populates='agendamentos')

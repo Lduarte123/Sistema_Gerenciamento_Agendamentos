@@ -1,7 +1,9 @@
 import customtkinter as ctk
 from tkinter import messagebox
-from model.emails import VerificacaoEmail
+from services.emails import VerificacaoEmail
+from util.constantes import Constante
 
+constante = Constante()
 
 class LoginView(ctk.CTkFrame):
     def __init__(self, root, controller):
@@ -10,8 +12,7 @@ class LoginView(ctk.CTkFrame):
 
         self.pack(expand=True)
 
-        # Título do Login
-        self.title_label = ctk.CTkLabel(self, text="Login", font=("Arial", 24, "bold"))
+        self.title_label = ctk.CTkLabel(self, text="Login", font=(constante.get_fonte()))
         self.title_label.pack(pady=(200, 70))
 
         self.entry_frame = ctk.CTkFrame(self, border_width=2, border_color="gray", fg_color="#1C1C1C", corner_radius=10, width=340, height=200)
@@ -45,11 +46,11 @@ class LoginView(ctk.CTkFrame):
             self.verificacao_email = VerificacaoEmail(self.controller.usuario_logado_email())
             codigo_inserido = self.verificacao_email.solicitar_codigo_verificacao(self.master)
             if codigo_inserido is None or not self.verificacao_email.validar_codigo(codigo_inserido):
-                messagebox.showerror("Erro", "Código de verificação inválido.")
+                messagebox.showerror(constante.get_erro(), "Código de verificação inválido.")
                 return
             self.controller.exibir_tela_inicial()
             return
-        messagebox.showerror("Erro", "Credenciais Inválidas")
+        messagebox.showerror(constante.get_erro(), "Credenciais Inválidas")
 
     def open_register(self):
         self.controller.exibir_tela_registro()

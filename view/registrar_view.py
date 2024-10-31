@@ -3,8 +3,9 @@ from tkcalendar import Calendar
 import tkinter as tk
 from tkinter import Toplevel, messagebox
 from datetime import datetime
+from util.constantes import Constante
 
-
+constante = Constante()
 
 class RegisterView(ctk.CTkFrame):
     def __init__(self, root, controller):
@@ -92,10 +93,10 @@ class RegisterView(ctk.CTkFrame):
             valid_date = datetime.strptime(selected_date, "%d/%m/%Y")
             # Verifica se a data selecionada é no futuro
             if valid_date.date() > datetime.now().date():
-                messagebox.showerror("Erro", "A data de nascimento não pode ser no futuro.")
+                messagebox.showerror(constante.get_erro(), "A data de nascimento não pode ser no futuro.")
                 return
         except ValueError:
-            messagebox.showerror("Erro", "Formato de data inválido. Por favor, selecione uma data válida.")
+            messagebox.showerror(constante.get_erro(), "Formato de data inválido. Por favor, selecione uma data válida.")
             return
 
         self.data_nasc_var.set(selected_date)
@@ -112,13 +113,13 @@ class RegisterView(ctk.CTkFrame):
 
         # Verifica se todos os campos estão preenchidos
         if not all([nome, senha, email, data_nasc, cidade, sexo]):
-            messagebox.showerror("Erro", "Todos os campos são obrigatórios. Por favor, preencha todos os campos.")
+            messagebox.showerror(constante.get_erro(), "Todos os campos são obrigatórios. Por favor, preencha todos os campos.")
             return
 
         # Verifica se o e-mail já está cadastrado
         emails_cadastrados = self.controller.obter_emails_cadastrados()
         if email in emails_cadastrados:
-            messagebox.showerror("Erro", "Erro ao registrar usuário: o e-mail já está em uso.")
+            messagebox.showerror(constante.get_erro(), "Erro ao registrar usuário: o e-mail já está em uso.")
             return
 
         resultado = self.controller.registrar_usuario(nome, email, senha, data_nasc, cidade, sexo)
@@ -126,7 +127,7 @@ class RegisterView(ctk.CTkFrame):
             messagebox.showinfo("Sucesso", "Usuário registrado com sucesso!")
             self.voltar()
         else:
-            messagebox.showerror("Erro", "Erro ao registrar usuário. Verifique suas informações.")
+            messagebox.showerror(constante.get_erro(), "Erro ao registrar usuário. Verifique suas informações.")
 
     def voltar(self):
         self.controller.exibir_tela_login()

@@ -1,14 +1,15 @@
-# controller/app_controller.py
-
 from view.criar_agendamento_view import CriarAgendamentoFrame
 from view.visualizar_view import VisualizarFrame
-from view.button_frame import ButtonFrame  # Importa a tela de visualização de perfil
+from view.janela_principal_view import MainFrame
 from view.login_view import LoginView
-from view.registrar_view import RegisterView  # Importa a nova tela de registro
-from model.agendamento import AgendamentoModel
+from view.registrar_view import RegisterView
+from model.models import AgendamentoModel
 from repository.agendamento_repository import AgendamentoRepository
 from repository.usuario_repository import UsuarioRepository
 from view.visualizar_perfil import VisualizarPerfilFrame
+from util.constantes import Constante
+
+constante = Constante()
 
 class AppController:
     def __init__(self, root):
@@ -17,7 +18,7 @@ class AppController:
         self.agendamento_repository = AgendamentoRepository() 
         self.usuario_repo = UsuarioRepository()
         self.main_frame = None
-        self.usuario_id = None  # Armazena o ID do usuário logado
+        self.usuario_id = None
         self.exibir_tela_login()
 
     def exibir_tela_login(self):
@@ -41,14 +42,13 @@ class AppController:
         if self.main_frame:
             self.main_frame.pack_forget()
 
-        self.main_frame = ButtonFrame(self.root, self)
+        self.main_frame = MainFrame(self.root, self)
         self.main_frame.pack(fill="both", expand=True)
 
     def abrir_criar_agendamento(self):
         if self.main_frame:
             self.main_frame.pack_forget()
 
-        # Supondo que você tenha um atributo `usuario_id` na sua classe controlador
         self.main_frame = CriarAgendamentoFrame(self.root, self.agendamento_model, self, self.usuario_id)
         self.main_frame.pack(fill="both", expand=True)
 
@@ -64,37 +64,35 @@ class AppController:
         if self.main_frame:
             self.main_frame.pack_forget()
 
-        if self.usuario_id is not None:  # Verifica se o usuario_id está definido
-            # Obtenha as informações do usuário usando o repositório
-            usuario_info = self.usuario_repo.obter_usuario_por_id(self.usuario_id)  # Ajuste aqui
-            if usuario_info:  # Verifica se o usuário foi encontrado
+        if self.usuario_id is not None:
+            usuario_info = self.usuario_repo.obter_usuario_por_id(self.usuario_id)
+            if usuario_info:
                 self.main_frame = VisualizarPerfilFrame(self.root, usuario_info)
                 self.main_frame.pack(fill="both", expand=True)
             else:
-                print("Erro: usuário não encontrado.")
+                print(constante.get_erro_usuario_nao_encontrado())
         else:
-            print("Erro: usuario_id não está definido.")
+            print(constante.get_erro_usuario_id_nao_definido())
 
 
             
     def validar_login(self, username, senha):
         usuario = self.usuario_repo.validar_usuario(username, senha)
         if usuario:
-            self.usuario_id = usuario.id  # Supondo que usuario.id retorna o ID do usuário
+            self.usuario_id = usuario.id
         return usuario
 
     def exibir_tela_inicial(self):
         if self.main_frame:
             self.main_frame.pack_forget()
 
-        self.main_frame = ButtonFrame(self.root, self)
+        self.main_frame = MainFrame(self.root, self)
         self.main_frame.pack(fill="both", expand=True)
 
     def obter_emails_cadastrados(self):
-        """Obtém todos os e-mails cadastrados no banco de dados."""
         return self.usuario_repo.obter_emails_cadastrados()
     
     def usuario_logado_email(self):
-        usuario_id = self.usuario_id  # Usa o ID do usuário logado
+        usuario_id = self.usuario_id
         return self.usuario_repo.obter_usuario_logado_email(usuario_id)
 

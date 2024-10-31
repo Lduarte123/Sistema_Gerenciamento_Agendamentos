@@ -1,56 +1,52 @@
 import customtkinter as ctk
 from PIL import Image, ImageTk
 from datetime import datetime
+from util.constantes import Constante
 
-class ButtonFrame(ctk.CTkFrame):
+constante = Constante()
+
+class MainFrame(ctk.CTkFrame):
     def __init__(self, master, controller):
         super().__init__(master, fg_color="transparent")
         self.controller = controller
         self.grid(row=0, column=0, sticky="nsew")
 
-        # Carrega as imagens
-        self.imagem_agendar = self.carregar_imagem("new_code/assets/image_c.png", (80, 80))
-        self.imagem_visualizar = self.carregar_imagem("new_code/assets/image_v.png", (80, 80))
-        self.imagem_perfil = self.carregar_imagem("new_code/assets/human.png", (80, 80))
+        self.imagem_agendar = self.carregar_imagem("assets/image_c.png", (80, 80))
+        self.imagem_visualizar = self.carregar_imagem("assets/image_v.png", (80, 80))
+        self.imagem_perfil = self.carregar_imagem("assets/human.png", (80, 80))
 
-        # Container principal para organizar os frames
         self.container = ctk.CTkFrame(self, fg_color="transparent")
         self.container.pack(expand=True, fill="both")
 
-        # Frame único para hora e data
         self.frame_superior = ctk.CTkFrame(
             self.container,
-            fg_color="transparent",  # Cor azul dos botões
+            fg_color="transparent",
             corner_radius=10,
             width=200,
             height=100
         )
         self.frame_superior.place(x=10, y=-20)
-
-        # Adiciona o relógio digital
         self.label_relogio = ctk.CTkLabel(
             self.frame_superior,
             text="",
-            font=("Arial", 24, "bold"),
+            font=(constante.get_fonte_relogio()),
             text_color="white",
-            anchor="w"  # Alinha o texto à esquerda
+            anchor="w"
         )
-        self.label_relogio.place(x=10, rely=0.25)  # Mudei de 0.3 para 0.25
+        self.label_relogio.place(x=10, rely=0.25)
         
         # Adiciona a data
         self.label_data = ctk.CTkLabel(
             self.frame_superior,
             text="",
-            font=("Arial", 16, "bold"),
+            font=(constante.get_fonte_data()),
             text_color="white",
-            anchor="w"  # Alinha o texto à esquerda
+            anchor="w"
         )
-        self.label_data.place(x=10, rely=0.55)  # Mudei de 0.7 para 0.55
-        
-        # Inicia a atualização do relógio e data
+        self.label_data.place(x=10, rely=0.55)
+
         self.atualizar_relogio()
 
-        # Frame de botões com borda
         self.botao_frame = ctk.CTkFrame(
             self.container, 
             border_width=2,
@@ -62,10 +58,9 @@ class ButtonFrame(ctk.CTkFrame):
         )
         self.botao_frame.pack(expand=True, padx=20, pady=20)
 
-        self.titulo = ctk.CTkLabel(self.botao_frame, text="Gerenciamento de Agendamentos", font=("Arial", 20, "bold"))
+        self.titulo = ctk.CTkLabel(self.botao_frame, text=constante.get_titulo_gerenciamento(), font=(constante.get_fonte()))
         self.titulo.pack(pady=(10, 30))
 
-        # Cria os botões com espaçamento igual
         self.button_a = ctk.CTkButton(
             self.botao_frame, text="Agendar", image=self.imagem_agendar, compound="top",
             width=100, height=100, corner_radius=15, command=self.controller.abrir_criar_agendamento

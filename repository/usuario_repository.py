@@ -1,9 +1,14 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
-from model.models import UsuarioModel  # Importar de models.py
+from model.models import UsuarioModel
+from util.constantes import Constante
+from util.data_base_cfg import Config
 
-engine = create_engine('postgresql://postgres:123@localhost/postgres')
+constante = Constante()
+config = Config()
+
+engine = create_engine(config.get_cfg())
 Session = sessionmaker(bind=engine)
 
 class UsuarioRepository:
@@ -15,9 +20,7 @@ class UsuarioRepository:
         return usuario
     
     def registrar_usuario(self, nome, email, senha, data_nasc, cidade, sexo):
-        print(f"Tentando registrar: {nome}, {email}, {data_nasc}, {cidade}, {sexo}")  # Para depuração
         try:
-            # Aqui você pode validar e preparar a data, se necessário
             data_nasc_formatada = datetime.strptime(data_nasc, "%d/%m/%Y").date()
 
             novo_usuario = UsuarioModel(
@@ -31,11 +34,11 @@ class UsuarioRepository:
             
             self.session.add(novo_usuario)
             self.session.commit()
-            print("Usuário registrado com sucesso.")  # Para depuração
+            print(constante.get_mensagem_sucesso_registro())
             return True
-        except Exception as e:
-            print(f"Erro ao registrar usuário: {e}")  # Log do erro
-            self.session.rollback()  # Reverter alterações em caso de erro
+        
+        except:
+            self.session.rollback()
             return False
 
     def obter_emails_cadastrados(self):
@@ -47,7 +50,6 @@ class UsuarioRepository:
         return self.session.query(UsuarioModel).filter_by(id=usuario_id).first()
     
     def atualizar_usuario(self, usuario_id, nome, email, cidade, sexo, senha):
-        """Atualiza os dados do usuário no banco de dados."""
         try:
             usuario = self.session.query(UsuarioModel).filter_by(id=usuario_id).first()
             if usuario:
@@ -55,16 +57,14 @@ class UsuarioRepository:
                 usuario.email = email
                 usuario.cidade = cidade
                 usuario.sexo = sexo
-                usuario.senha = senha  # Considere hash a senha se necessário
-
-                self.session.commit()  # Confirma as alterações
+                usuario.senha = senha 
+                self.session.commit()
                 return True
             else:
-                print("Usuário não encontrado.")  # Para depuração
+                print(constante.get_mensagem_usuario_nao_encontrado()) 
                 return False
-        except Exception as e:
-            print(f"Erro ao atualizar usuário: {e}")  # Log do erro
-            self.session.rollback()  # Reverter alterações em caso de erro
+        except:
+            self.session.rollback()
             return False
     
     def obter_usuario_logado_email(self, usuario_id):
