@@ -27,6 +27,7 @@ class AgendamentoModel(Base):
     horario = Column(Time, nullable=False)
     local = Column(String, nullable=False)
     descricao = Column(String, nullable=True)
+    status = Column(String, nullable=False)
     
     # Chave estrangeira para Usuario
     usuario_id = Column(Integer, ForeignKey('usuarios.id', ondelete='CASCADE'), nullable=False)

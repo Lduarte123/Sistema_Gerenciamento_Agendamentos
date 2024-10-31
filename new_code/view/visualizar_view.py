@@ -102,7 +102,7 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
                 horario_formatado = agendamento.horario.strftime("%H:%M")  # Formata o horário
 
             # Insere os dados formatados na tabela, incluindo a descrição
-            self.tree.insert('', 'end', values=(agendamento.id, agendamento.nome, data_formatada, horario_formatado, agendamento.local, agendamento.descricao if agendamento.descricao else "N/A"))  # Exibe "N/A" se descrição for vazia
+            self.tree.insert('', 'end', values=(agendamento.id, agendamento.nome, data_formatada, horario_formatado, agendamento.local, agendamento.descricao, agendamento.status))
 
         # Atualiza o estado dos botões de navegação
         self.btn_anterior.configure(state="normal" if self.pagina_atual > 0 else "disabled")

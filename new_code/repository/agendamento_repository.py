@@ -27,7 +27,8 @@ class AgendamentoRepository:
             horario=horario,
             local=agendamento.local,
             descricao=agendamento.descricao,
-            usuario_id=agendamento.usuario_id  # Atribuir o usuario_id
+            usuario_id=agendamento.usuario_id,  # Atribuir o usuario_id
+            status = agendamento.status
         )
 
         self.session.add(novo_agendamento)
@@ -57,3 +58,8 @@ class AgendamentoRepository:
 
     def listar_agendamentos_por_usuario(self, usuario_id):
         return self.session.query(AgendamentoModel).filter(AgendamentoModel.usuario_id == usuario_id).all()
+
+    def cancelar_agendamento(self, agendamento_id):
+        agendamento = self.session.query(AgendamentoModel).filter_by(id=agendamento_id).first()
+        agendamento.status = "Cancelado"
+        self.session.commit()
