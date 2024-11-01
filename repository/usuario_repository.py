@@ -1,6 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
+from tkinter import messagebox
 from model.models import UsuarioModel
 from util.constantes import Constante
 from util.data_base_cfg import Config
@@ -62,12 +63,17 @@ class UsuarioRepository:
                 usuario.sexo = sexo
                 usuario.senha = senha 
                 self.session.commit()
+                messagebox.showinfo("Sucesso", "Perfil atualizado com sucesso.")
                 return True
+            
+            
             else:
-                print(constante.get_mensagem_usuario_nao_encontrado()) 
+                print(constante.get_mensagem_usuario_nao_encontrado())
+                messagebox.showerror("Erro", constante.get_mensagem_usuario_nao_encontrado())
                 return False
         except:
             self.session.rollback()
+            messagebox.showerror("Erro", "Ocorreu um erro ao atualizar o perfil. Tente novamente.")
             return False
     
     def obter_usuario_logado_email(self, usuario_id):
