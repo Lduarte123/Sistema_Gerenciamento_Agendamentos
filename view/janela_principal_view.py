@@ -18,14 +18,44 @@ class MainFrame(ctk.CTkFrame):
         self.container = ctk.CTkFrame(self, fg_color="transparent")
         self.container.pack(expand=True, fill="both")
 
+        # Frame superior (data e hora) - mantém a posição original
         self.frame_superior = ctk.CTkFrame(
             self.container,
             fg_color="transparent",
             corner_radius=10,
             width=200,
-            height=100
+            height=150
         )
-        self.frame_superior.place(x=10, y=-20)
+        self.frame_superior.place(x=10, y=-35)  # Alterado de y=-20 para y=-25
+
+        # Frame do usuário - pode ser ajustado independentemente
+        nome_usuario = self.controller.obter_nome_usuario()
+        tamanho_texto = len(nome_usuario) * 10
+        
+        self.frame_usuario = ctk.CTkFrame(
+            self.container,  # Mantém no container principal
+            fg_color="#1a75ff",
+            corner_radius=20,
+            width=tamanho_texto + 40,
+            height=40
+        )
+        # Aqui você pode ajustar apenas a posição do frame do usuário
+        self.frame_usuario.place(x=10, rely=0.93, anchor="sw")  # Ajuste o rely conforme necessário
+
+        # Força o frame a manter o tamanho definido
+        self.frame_usuario.grid_propagate(False)
+        self.frame_usuario.pack_propagate(False)
+
+        self.label_usuario = ctk.CTkLabel(
+            self.frame_usuario,
+            text=nome_usuario,
+            font=(constante.get_fonte_data()),
+            text_color="white",
+            anchor="center"
+        )
+        self.label_usuario.place(relx=0.5, rely=0.5, anchor="center")
+
+        # Relógio
         self.label_relogio = ctk.CTkLabel(
             self.frame_superior,
             text="",
@@ -33,9 +63,9 @@ class MainFrame(ctk.CTkFrame):
             text_color="white",
             anchor="w"
         )
-        self.label_relogio.place(x=10, rely=0.25)
+        self.label_relogio.place(x=10, rely=0.35)
         
-        # Adiciona a data
+        # Data
         self.label_data = ctk.CTkLabel(
             self.frame_superior,
             text="",
