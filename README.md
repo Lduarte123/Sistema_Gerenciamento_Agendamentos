@@ -11,6 +11,7 @@ Este projeto consiste em um sistema de agendamento desenvolvido em Python, utili
 
 Linguagem: Python
 Interface Gráfica: Tkinter
+
 Banco de Dados: PostgreSQL
 
 **Bibliotecas:**
