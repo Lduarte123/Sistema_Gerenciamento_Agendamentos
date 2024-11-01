@@ -10,6 +10,7 @@ Este projeto consiste em um sistema de agendamento desenvolvido em Python, utili
 **3. Tecnologias Utilizadas**
 
 Linguagem: Python
+
 Interface Gráfica: Tkinter
 
 Banco de Dados: PostgreSQL
