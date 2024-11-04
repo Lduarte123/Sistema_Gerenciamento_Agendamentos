@@ -70,3 +70,6 @@ class AgendamentoRepository:
         agendamento = self.session.query(AgendamentoModel).filter_by(id=agendamento_id).first()
         agendamento.status = constante.get_status_cancelado()
         self.session.commit()
+
+    def checar_tipo(self, usuario_id):
+        return self.session.query(AgendamentoModel).filter_by(tipo='admin', usuario_id=usuario_id).first() is not None
