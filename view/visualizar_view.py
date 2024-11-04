@@ -88,20 +88,22 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         for agendamento in agendamentos_pagina:
             if isinstance(agendamento.data, str):
                 try:
-                    data_agendamento = datetime.strptime(agendamento.data, "%Y-%m-%d")
+                    data_agendamento = datetime.strptime(agendamento.data, "%Y-%m-%d").date() 
                 except ValueError:
-                    data_agendamento = datetime.strptime(agendamento.data, "%d-%m-%Y")
+                    data_agendamento = datetime.strptime(agendamento.data, "%d-%m-%Y").date() 
+            elif isinstance(agendamento.data, datetime):  # Se for datetime, converte para date
+             data_agendamento = agendamento.data.date()
             else:
-                data_agendamento = agendamento.data
+                data_agendamento = agendamento.data 
 
             # Formata a data corretamente como string
             data_formatada = data_agendamento.strftime("%d-%m-%Y")  # Formato dd-mm-aaaa
             horario_formatado = agendamento.horario if isinstance(agendamento.horario, str) else agendamento.horario.strftime("%H:%M")
 
-            tags = ("proximo",) if data_atual <= data_agendamento <= data_atual + timedelta(days=2) else ()
+            tags = ("Evento proximo",) if data_atual <= data_agendamento <= data_atual + timedelta(days=2) else ()
             self.tree.insert('', 'end', values=(agendamento.id, agendamento.nome, data_formatada, horario_formatado, agendamento.local, agendamento.descricao or "N/A"), tags=tags)
 
-            self.tree.tag_configure("proximo", foreground="red", font=("arial", 10, "bold"))
+            self.tree.tag_configure("Evento proximo", foreground="red", font=("arial", 10, "bold"))
 
             # Para o horário, você deve verificar da mesma forma
             if isinstance(agendamento.horario, str):
