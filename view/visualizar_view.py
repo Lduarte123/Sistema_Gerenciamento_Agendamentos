@@ -6,7 +6,7 @@ from view.editar_agendamento_view import Editar
 from datetime import datetime
 
 class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
-    def __init__(self, master, agendamento_repository, usuario_id):
+    def __init__(self, master, agendamento_repository, usuario_id, filtro):
         super().__init__(master)
         self.agendamento_repository = agendamento_repository
         self.usuario_id = usuario_id
@@ -230,4 +230,19 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
             self.atualizar_tabela()
     
     def filtro_de_pesquisa(self):
-        pass
+        termo_pesquisa = self.entry_pesquisa.get()
+        if termo_pesquisa:
+            # Aqui você deve chamar o repositório para obter os resultados filtrados.
+            resultados = self.agendamento_repository.obter_agendamentos_por_termo(termo_pesquisa)
+            
+            # Limpe a treeview antes de inserir novos resultados
+            for item in self.tree.get_children():
+                self.tree.delete(item)
+            
+            # Popule a treeview com os resultados filtrados
+            for agendamento in resultados:
+                self.tree.insert("", "end", values=(agendamento.id, agendamento.nome, agendamento.data, 
+                                                    agendamento.horario, agendamento.local, 
+                                                    agendamento.descricao, agendamento.status))
+        else:
+            messagebox.showinfo("Informação", "Digite um termo para pesquisar.")

@@ -70,3 +70,9 @@ class AgendamentoRepository:
         agendamento = self.session.query(AgendamentoModel).filter_by(id=agendamento_id).first()
         agendamento.status = constante.get_status_cancelado()
         self.session.commit()
+
+    def obter_agendamentos_por_termo(self, termo):
+        return self.session.query(AgendamentoModel).filter(
+            AgendamentoModel.nome.ilike(f"%{termo}%")
+        ).all()
+

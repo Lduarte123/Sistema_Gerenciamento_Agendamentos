@@ -57,7 +57,7 @@ class AppController:
         if self.main_frame:
             self.main_frame.pack_forget()
 
-        self.main_frame = VisualizarFrame(self.root, self.agendamento_repository, self.usuario_id)
+        self.main_frame = VisualizarFrame(self.root, self.agendamento_repository, self.usuario_id, filtro=None)
         self.main_frame.pack(fill="both", expand=True)
 
     def abrir_visualizar_perfil(self):
