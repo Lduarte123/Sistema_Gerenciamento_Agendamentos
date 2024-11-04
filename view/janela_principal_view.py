@@ -39,8 +39,9 @@ class MainFrame(ctk.CTkFrame):
             width=tamanho_texto + 40,
             height=40
         )
-        # Aqui você pode ajustar apenas a posição do frame do usuário
-        self.frame_usuario.place(x=10, rely=0.93, anchor="sw")  # Ajuste o rely conforme necessário
+        # Adiciona o evento de clique ao frame
+        self.frame_usuario.bind("<Button-1>", lambda e: self.controller.abrir_visualizar_perfil())
+        self.frame_usuario.place(x=10, rely=0.99, anchor="sw")  # Alterado de 0.93 para 0.97
 
         # Força o frame a manter o tamanho definido
         self.frame_usuario.grid_propagate(False)
@@ -53,6 +54,8 @@ class MainFrame(ctk.CTkFrame):
             text_color="white",
             anchor="center"
         )
+        # Também adiciona o evento de clique à label do usuário
+        self.label_usuario.bind("<Button-1>", lambda e: self.controller.abrir_visualizar_perfil())
         self.label_usuario.place(relx=0.5, rely=0.5, anchor="center")
 
         # Relógio
