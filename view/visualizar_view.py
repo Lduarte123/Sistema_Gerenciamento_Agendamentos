@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from tkinter import ttk, messagebox
+from datetime import timedelta
 from repository.agendamento_repository import AgendamentoRepository
 from model.models import AgendamentoModel as Agendamento
 from view.editar_agendamento_view import Editar
@@ -75,6 +76,7 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         # Obtém a lista completa de agendamentos, se não for fornecida
         if agendamentos is None:
             agendamentos = self.agendamento_repository.listar_agendamentos_por_usuario(self.usuario_id)
+            data_atual = datetime.now()
 
         self.total_agendamentos = len(agendamentos)
 
@@ -94,6 +96,12 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
 
             # Formata a data corretamente como string
             data_formatada = data_agendamento.strftime("%d-%m-%Y")  # Formato dd-mm-aaaa
+            horario_formatado = agendamento.horario if isinstance(agendamento.horario, str) else agendamento.horario.strftime("%H:%M")
+
+            tags = ("proximo",) if data_atual <= data_agendamento <= data_atual + timedelta(days=2) else ()
+            self.tree.insert('', 'end', values=(agendamento.id, agendamento.nome, data_formatada, horario_formatado, agendamento.local, agendamento.descricao or "N/A"), tags=tags)
+
+            self.tree.tag_configure("proximo", foreground="red", font=("arial", 10, "bold"))
 
             # Para o horário, você deve verificar da mesma forma
             if isinstance(agendamento.horario, str):
