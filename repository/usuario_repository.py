@@ -81,5 +81,6 @@ class UsuarioRepository:
         return usuario.email if usuario else None
     
     def checar_tipo(self, usuario_id):
-        return self.session.query(UsuarioModel).filter_by(tipo='admin', usuario_id=usuario_id).first() is not None
+        return self.session.query(UsuarioModel).filter_by(tipo='admin', id=usuario_id).first() is not None
+
 
