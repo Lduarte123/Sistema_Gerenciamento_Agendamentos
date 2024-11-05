@@ -23,7 +23,7 @@ class UsuarioRepository:
         usuario = self.session.query(UsuarioModel).filter(UsuarioModel.email == email, UsuarioModel.senha == senha).first()
         return usuario
     
-    def registrar_usuario(self, nome, email, senha, data_nasc, cidade, sexo):
+    def registrar_usuario(self, nome, email, senha, data_nasc, cidade, sexo, tipo):
         try:
             data_nasc_formatada = datetime.strptime(data_nasc, "%d/%m/%Y").date()
 
@@ -33,7 +33,8 @@ class UsuarioRepository:
                 senha=senha,
                 data_nasc=data_nasc_formatada,
                 cidade=cidade,
-                sexo=sexo
+                sexo=sexo,
+                tipo=tipo
             )
             
             self.session.add(novo_usuario)
@@ -78,3 +79,7 @@ class UsuarioRepository:
     def obter_usuario_logado_email(self, usuario_id):
         usuario = self.session.query(UsuarioModel).filter_by(id=usuario_id).first()
         return usuario.email if usuario else None
+    
+    def checar_tipo(self, usuario_id):
+        return self.session.query(UsuarioModel).filter_by(tipo='admin', usuario_id=usuario_id).first() is not None
+

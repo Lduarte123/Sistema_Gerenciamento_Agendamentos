@@ -17,6 +17,7 @@ class UsuarioModel(Base):
     data_nasc = Column(Date, nullable=False)
     cidade = Column(String, nullable=False)
     sexo = Column(String, nullable=False)
+    tipo = Column(String, nullable=False)
 
     agendamentos = relationship('AgendamentoModel', back_populates='usuario', cascade="all, delete-orphan")
 

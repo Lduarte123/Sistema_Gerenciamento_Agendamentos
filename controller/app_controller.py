@@ -8,6 +8,8 @@ from repository.agendamento_repository import AgendamentoRepository
 from repository.usuario_repository import UsuarioRepository
 from view.visualizar_perfil import VisualizarPerfilFrame
 from util.constantes import Constante
+from view.admin_view  import AdminFrame
+
 
 constante = Constante()
 
@@ -19,6 +21,7 @@ class AppController:
         self.usuario_repo = UsuarioRepository()
         self.main_frame = None
         self.usuario_id = None
+        self.usuario_tipo_admin = False
         self.exibir_tela_login()
 
     def exibir_tela_login(self):
@@ -35,8 +38,8 @@ class AppController:
         self.main_frame = RegisterView(self.root, self)
         self.main_frame.pack(fill="both", expand=True)
 
-    def registrar_usuario(self, nome, email, senha, data_nasc, cidade, sexo):
-        return self.usuario_repo.registrar_usuario(nome, email, senha, data_nasc, cidade, sexo)
+    def registrar_usuario(self, nome, email, senha, data_nasc, cidade, sexo, tipo):
+        return self.usuario_repo.registrar_usuario(nome, email, senha, data_nasc, cidade, sexo, tipo="padrão")
 
     def abrir_tela_principal(self):
         if self.main_frame:
@@ -80,13 +83,18 @@ class AppController:
         usuario = self.usuario_repo.validar_usuario(username, senha)
         if usuario:
             self.usuario_id = usuario.id
+            self.usuario_tipo_admin = self.usuario_repo.checar_tipo(usuario.id)
         return usuario
 
     def exibir_tela_inicial(self):
         if self.main_frame:
             self.main_frame.pack_forget()
 
-        self.main_frame = MainFrame(self.root, self)
+        if self.usuario_tipo_admin:
+            self.main_frame = AdminFrame(self.root, self)
+        else:
+            self.main_frame = MainFrame(self.root, self)
+        
         self.main_frame.pack(fill="both", expand=True)
 
     def obter_emails_cadastrados(self):
