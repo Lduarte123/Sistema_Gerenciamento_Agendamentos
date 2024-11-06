@@ -76,7 +76,7 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         # Obtém a lista completa de agendamentos, se não for fornecida
         if agendamentos is None:
             agendamentos = self.agendamento_repository.listar_agendamentos_por_usuario(self.usuario_id)
-            data_atual = datetime.now()
+            
 
         self.total_agendamentos = len(agendamentos)
 
@@ -92,7 +92,7 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
                 except ValueError:
                     data_agendamento = datetime.strptime(agendamento.data, "%d-%m-%Y").date() 
             elif isinstance(agendamento.data, datetime):  # Se for datetime, converte para date
-             data_agendamento = agendamento.data.date()
+               data_agendamento = agendamento.data.date()
             else:
                 data_agendamento = agendamento.data 
 
@@ -100,9 +100,9 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
             data_formatada = data_agendamento.strftime("%d-%m-%Y")  # Formato dd-mm-aaaa
             horario_formatado = agendamento.horario if isinstance(agendamento.horario, str) else agendamento.horario.strftime("%H:%M")
 
-            tags = ("Evento proximo",) if data_atual <= data_agendamento <= data_atual + timedelta(days=2) else ()
-            self.tree.insert('', 'end', values=(agendamento.id, agendamento.nome, data_formatada, horario_formatado, agendamento.local, agendamento.descricao or "N/A"), tags=tags)
-
+            data_atual = datetime.now().date()
+            tags = ("Evento proximo",) if data_atual <= data_agendamento <= (data_atual + timedelta(days=2)) else ()
+            
             self.tree.tag_configure("Evento proximo", foreground="red", font=("arial", 10, "bold"))
 
             # Para o horário, você deve verificar da mesma forma
@@ -112,7 +112,7 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
                 horario_formatado = agendamento.horario.strftime("%H:%M")  # Formata o horário
 
             # Insere os dados formatados na tabela, incluindo a descrição
-            self.tree.insert('', 'end', values=(agendamento.id, agendamento.nome, data_formatada, horario_formatado, agendamento.local, agendamento.descricao, agendamento.status))
+            self.tree.insert('', 'end', values=(agendamento.id, agendamento.nome, data_formatada, horario_formatado, agendamento.local, agendamento.descricao, agendamento.status or "N/A"), tags=tags)
 
         # Atualiza o estado dos botões de navegação
         self.btn_anterior.configure(state="normal" if self.pagina_atual > 0 else "disabled")
@@ -122,6 +122,7 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         """Ordena a Treeview com base na coluna selecionada."""
         # Alterna a direção de ordenação
         self.ordenacao_direcao[coluna] = not self.ordenacao_direcao[coluna]
+        
 
         # Obtém a lista completa de agendamentos
         agendamentos = self.agendamento_repository.listar_agendamentos_por_usuario(self.usuario_id)
