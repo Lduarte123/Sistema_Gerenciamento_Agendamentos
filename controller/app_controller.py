@@ -8,6 +8,7 @@ from repository.agendamento_repository import AgendamentoRepository
 from repository.usuario_repository import UsuarioRepository
 from view.visualizar_perfil import VisualizarPerfilFrame
 from util.constantes import Constante
+from view.visualizar_user import VisualizarUsuariosFrame
 from view.admin_view  import AdminFrame
 
 
@@ -77,6 +78,21 @@ class AppController:
         else:
             print(constante.get_erro_usuario_id_nao_definido())
 
+    def abrir_listar_usuarios(self):
+        """Abre a tela de visualização de todos os usuários"""
+        if self.main_frame:
+            self.main_frame.pack_forget()  # Remove o frame anterior
+
+        # Paginação (por exemplo, página 1 e 20 itens por página)
+        pagina = 1
+        itens_por_pagina = 20
+
+        # Obtém os usuários da primeira página
+        usuarios = self.usuario_repo.listar_usuarios(pagina, itens_por_pagina)
+
+        # Cria o frame para visualizar todos os usuários
+        self.main_frame = VisualizarUsuariosFrame(self.root, self.usuario_repo, usuarios)
+        self.main_frame.pack(fill="both", expand=True)
 
             
     def validar_login(self, username, senha):

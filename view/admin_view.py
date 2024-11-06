@@ -1,54 +1,105 @@
 import customtkinter as ctk
-from tkinter import messagebox
+from PIL import Image, ImageTk
+from datetime import datetime
+from util.constantes import Constante
+
+constante = Constante()
 
 class AdminFrame(ctk.CTkFrame):
-    def __init__(self, root, controller):
-        super().__init__(root)
+    def __init__(self, master, controller):
+        super().__init__(master, fg_color="transparent")
         self.controller = controller
+        self.grid(row=0, column=0, sticky="nsew")
 
-        # Configurações gerais da tela
-        self.pack(expand=True, fill="both", padx=20, pady=20)
-        self.configure(fg_color="#2E2E2E")  # Fundo mais escuro
+        self.imagem_agendar = self.carregar_imagem("assets/image_c.png", (80, 80))
+        self.imagem_visualizar = self.carregar_imagem("assets/image_v.png", (80, 80))
+        self.imagem_perfil = self.carregar_imagem("assets/human.png", (80, 80))
+        self.imagem_listar_todos = self.carregar_imagem("assets/listagem_todos.png", (80, 80))
+        self.imagem_listar_user = self.carregar_imagem("assets/listar_user.png", (80, 80))
 
-        # Título da tela
-        self.title_label = ctk.CTkLabel(self, text="Administração", font=("Arial", 24, "bold"), text_color="#FFD700")
-        self.title_label.pack(pady=(50, 20))
 
-        # Botão de Gerenciamento de Usuários
-        self.user_mgmt_button = ctk.CTkButton(self, text="Gerenciar Usuários", command=self.gerenciar_usuarios, width=250, height=40)
-        self.user_mgmt_button.pack(pady=10)
+        self.container = ctk.CTkFrame(self, fg_color="transparent")
+        self.container.pack(expand=True, fill="both")
 
-        # Botão para Visualizar Logs
-        self.view_logs_button = ctk.CTkButton(self, text="Visualizar Logs", command=self.visualizar_logs, width=250, height=40)
-        self.view_logs_button.pack(pady=10)
+        self.frame_superior = ctk.CTkFrame(
+            self.container,
+            fg_color="transparent",
+            corner_radius=10,
+            width=200,
+            height=100
+        )
+        self.frame_superior.place(x=10, y=-20)
+        self.label_relogio = ctk.CTkLabel(
+            self.frame_superior,
+            text="",
+            font=(constante.get_fonte_relogio()),
+            text_color="white",
+            anchor="w"
+        )
+        self.label_relogio.place(x=10, rely=0.25)
+        
+        # Adiciona a data
+        self.label_data = ctk.CTkLabel(
+            self.frame_superior,
+            text="",
+            font=(constante.get_fonte_data()),
+            text_color="white",
+            anchor="w"
+        )
+        self.label_data.place(x=10, rely=0.55)
 
-        # Botão para Gerenciar Configurações do Sistema
-        self.system_settings_button = ctk.CTkButton(self, text="Configurações do Sistema", command=self.configurar_sistema, width=250, height=40)
-        self.system_settings_button.pack(pady=10)
+        self.atualizar_relogio()
 
-        # Listagem de Ações Recentes (apenas para visualização)
-        self.actions_label = ctk.CTkLabel(self, text="Ações Recentes", font=("Arial", 18, "bold"), text_color="#FFD700")
-        self.actions_label.pack(pady=(40, 10))
+        self.botao_frame = ctk.CTkFrame(
+            self.container, 
+            border_width=2,
+            border_color="gray",
+            fg_color="#1C1C1C", 
+            corner_radius=10,
+            width=500,
+            height=500
+        )
+        self.botao_frame.pack(expand=True, padx=20, pady=20)
 
-        # Caixa de Texto para Exibir Logs
-        self.logs_textbox = ctk.CTkTextbox(self, width=400, height=200)
-        self.logs_textbox.pack(pady=10)
-        self.logs_textbox.insert("1.0", "Log 1: Usuário X criou um agendamento.\nLog 2: Usuário Y deletou um agendamento.")
-        self.logs_textbox.configure(state="disabled")  # Impede edição dos logs
+        self.titulo = ctk.CTkLabel(self.botao_frame, text=constante.get_titulo_gerenciamento(), font=(constante.get_fonte()))
+        self.titulo.pack(pady=(10, 30))
 
-        # Botão de Voltar
-        self.back_button = ctk.CTkButton(self, text="Voltar", command=self.voltar, width=100, height=30, fg_color="#FF4500")
-        self.back_button.pack(pady=(30, 10))
+        self.button_a = ctk.CTkButton(
+            self.botao_frame, text="Agendar", image=self.imagem_agendar, compound="top",
+            width=100, height=100, corner_radius=15, command=self.controller.abrir_criar_agendamento
+        )
+        self.button_a.pack(side="left", padx=20, pady=15)
 
-    def gerenciar_usuarios(self):
-        messagebox.showinfo("Gerenciar Usuários", "Aqui você poderá gerenciar os usuários.")
+        self.button_b = ctk.CTkButton(
+            self.botao_frame, text="Agendamentos", image=self.imagem_listar_todos, compound="top",
+            width=100, height=100, corner_radius=15, command=self.controller.abrir_visualizar_agendamento
+        )
+        self.button_b.pack(side="left", padx=20, pady=15)
 
-    def visualizar_logs(self):
-        messagebox.showinfo("Visualizar Logs", "Aqui você poderá visualizar logs do sistema.")
+        self.button_c = ctk.CTkButton(
+            self.botao_frame, text="Perfil", image=self.imagem_perfil, compound="top",
+            width=100, height=100, corner_radius=15, command=self.controller.abrir_visualizar_perfil
+        )
+        self.button_c.pack(side="left", padx=20, pady=15)
 
-    def configurar_sistema(self):
-        messagebox.showinfo("Configurações do Sistema", "Aqui você poderá alterar as configurações do sistema.")
+        self.button_d = ctk.CTkButton(
+            self.botao_frame, text="Listar Usuários", image=self.imagem_listar_user, compound="top",
+            width=100, height=100, corner_radius=15, command=self.controller.abrir_listar_usuarios
+        )
+        self.button_d.pack(side="left", padx=20, pady=15)
 
-    def voltar(self):
-        self.controller.exibir_tela_inicial()
+        self.botao_frame.pack(expand=True)
 
+    def carregar_imagem(self, caminho, tamanho):
+        imagem = Image.open(caminho)
+        imagem = imagem.resize(tamanho)
+        return ImageTk.PhotoImage(imagem)
+
+    def atualizar_relogio(self):
+        agora = datetime.now()
+        hora_atual = agora.strftime("%H:%M:%S")
+        data_atual = agora.strftime("%d/%m/%Y")
+        
+        self.label_relogio.configure(text=hora_atual)
+        self.label_data.configure(text=data_atual)
+        self.after(1000, self.atualizar_relogio)
