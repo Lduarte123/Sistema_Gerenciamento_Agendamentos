@@ -36,8 +36,42 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
 
         self.label_horario = ctk.CTkLabel(self.frame_interno, text=constante.get_texto_horario())
         self.label_horario.grid(row=3, column=0, padx=10, pady=(10, 5), sticky="w")
-        self.entrada_horario = ctk.CTkEntry(self.frame_interno, placeholder_text="HH:MM", width=250)
-        self.entrada_horario.grid(row=4, column=0, padx=10, pady=5)
+        
+        # Frame para organizar os comboboxes do horário horizontalmente
+        self.frame_horario = ctk.CTkFrame(self.frame_interno, fg_color='transparent')
+        self.frame_horario.grid(row=4, column=0, padx=10, pady=5)
+
+        # Combobox para horas (0-23)
+        self.horas = [f"{i:02d}" for i in range(24)]
+        self.combo_horas = ctk.CTkComboBox(
+            self.frame_horario, 
+            values=self.horas, 
+            width=120,
+            height=32,
+            dropdown_hover_color="#2CC985",
+            justify="center",
+            state="readonly",
+            button_color="#2CC985",
+            button_hover_color="#2AA876"
+        )
+        self.combo_horas.grid(row=0, column=0, padx=2)
+        self.combo_horas.set("00")
+
+        # Combobox para minutos (00-59)
+        self.minutos = [f"{i:02d}" for i in range(60)]
+        self.combo_minutos = ctk.CTkComboBox(
+            self.frame_horario, 
+            values=self.minutos, 
+            width=120,
+            height=32,
+            dropdown_hover_color="#2CC985",
+            justify="center",
+            state="readonly",
+            button_color="#2CC985",
+            button_hover_color="#2AA876"
+        )
+        self.combo_minutos.grid(row=0, column=1, padx=2)
+        self.combo_minutos.set("00")
 
         self.label_data = ctk.CTkLabel(self.frame_interno, text=constante.get_texto_data())
         self.label_data.grid(row=5, column=0, padx=10, pady=(10, 5), sticky="w")
@@ -72,7 +106,12 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
     def salvar(self):
         nome = self.entrada_nome.get().strip()
         data = self.calendario.get_date().strip()
-        horario = self.entrada_horario.get().strip()
+        
+        # Nova lógica simplificada para obter o horário dos comboboxes
+        horas = int(self.combo_horas.get())
+        minutos = int(self.combo_minutos.get())
+        horario = f"{horas:02d}:{minutos:02d}"
+        
         local = self.entrada_localizacao.get().strip()
         descricao = self.entrada_descricao.get()
 

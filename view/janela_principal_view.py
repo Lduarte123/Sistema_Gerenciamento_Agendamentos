@@ -17,7 +17,7 @@ class MainFrame(ctk.CTkFrame):
 
         self.container = ctk.CTkFrame(self, fg_color="transparent")
         self.container.pack(expand=True, fill="both")
-
+        
         # Frame superior (data e hora) - mantém a posição original
         self.frame_superior = ctk.CTkFrame(
             self.container,
@@ -60,26 +60,39 @@ class MainFrame(ctk.CTkFrame):
 
         # Relógio
         self.label_relogio = ctk.CTkLabel(
-            self.frame_superior,
+            self.left_frame,
             text="",
             font=(constante.get_fonte_relogio()),
             text_color="white",
             anchor="w"
         )
+        
         self.label_relogio.place(x=10, rely=0.35)
         
         # Data
         self.label_data = ctk.CTkLabel(
-            self.frame_superior,
+            self.left_frame,
             text="",
             font=(constante.get_fonte_data()),
             text_color="white",
             anchor="w"
         )
-        self.label_data.place(x=10, rely=0.55)
+        self.label_data.pack(anchor="w")
 
+        # Atualiza o relógio e data
         self.atualizar_relogio()
 
+        # Botão de Logout, alinhado à direita
+        self.logout_button = ctk.CTkButton(
+            self.frame_superior,
+            text="Sair",
+            command=self.controller.logout,  # Chama o método logout no controller
+            width=70,
+            height=30
+        )
+        self.logout_button.pack(side="right")
+
+        # Frame principal dos botões
         self.botao_frame = ctk.CTkFrame(
             self.container, 
             border_width=2,
@@ -91,9 +104,11 @@ class MainFrame(ctk.CTkFrame):
         )
         self.botao_frame.pack(expand=True, padx=20, pady=20)
 
+        # Título do frame de gerenciamento
         self.titulo = ctk.CTkLabel(self.botao_frame, text=constante.get_titulo_gerenciamento(), font=(constante.get_fonte()))
         self.titulo.pack(pady=(10, 30))
 
+        # Botões principais
         self.button_a = ctk.CTkButton(
             self.botao_frame, text="Agendar", image=self.imagem_agendar, compound="top",
             width=100, height=100, corner_radius=15, command=self.controller.abrir_criar_agendamento
