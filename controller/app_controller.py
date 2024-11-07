@@ -10,7 +10,7 @@ from view.visualizar_perfil import VisualizarPerfilFrame
 from util.constantes import Constante
 from view.visualizar_user import VisualizarUsuariosFrame
 from view.admin_view  import AdminFrame
-
+from view.admin_agendamentos import VisualizarAdminFrame
 
 constante = Constante()
 
@@ -61,7 +61,10 @@ class AppController:
         if self.main_frame:
             self.main_frame.pack_forget()
 
-        self.main_frame = VisualizarFrame(self.root, self.agendamento_repository, self.usuario_id)
+        if self.usuario_tipo_admin:
+            self.main_frame = VisualizarAdminFrame(self.root, self.agendamento_repository, self.usuario_id)
+        else:
+            self.main_frame = VisualizarFrame(self.root, self.agendamento_repository, self.usuario_id)
         self.main_frame.pack(fill="both", expand=True)
 
     def abrir_visualizar_perfil(self):
