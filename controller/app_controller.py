@@ -97,12 +97,3 @@ class AppController:
     def usuario_logado_email(self):
         usuario_id = self.usuario_id
         return self.usuario_repo.obter_usuario_logado_email(usuario_id)
-# função aqui pro frame name
-
-    def obter_nome_usuario(self):
-        if self.usuario_id is not None:
-            usuario = self.usuario_repo.obter_usuario_por_id(self.usuario_id)
-            if usuario:
-                return usuario.nome
-        return "Usuário"
-
