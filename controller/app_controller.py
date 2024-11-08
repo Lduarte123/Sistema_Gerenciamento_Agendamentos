@@ -25,6 +25,11 @@ class AppController:
         self.usuario_tipo_admin = False
         self.exibir_tela_login()
 
+    # Função de logout
+    def logout(self):
+        self.usuario_id = None  # Limpa o ID do usuário logado
+        self.exibir_tela_login()  # Volta para a tela de login
+
     def exibir_tela_login(self):
         if self.main_frame:
             self.main_frame.pack_forget()
@@ -56,15 +61,15 @@ class AppController:
         self.main_frame = CriarAgendamentoFrame(self.root, self.agendamento_model, self, self.usuario_id)
         self.main_frame.pack(fill="both", expand=True)
 
-
     def abrir_visualizar_agendamento(self):
         if self.main_frame:
             self.main_frame.pack_forget()
 
         if self.usuario_tipo_admin:
-            self.main_frame = VisualizarAdminFrame(self.root, self.agendamento_repository, self.usuario_id)
+            self.main_frame = VisualizarAdminFrame(self.root, self.agendamento_repository, self.usuario_id, filtro=None)
         else:
-            self.main_frame = VisualizarFrame(self.root, self.agendamento_repository, self.usuario_id)
+            self.main_frame = VisualizarFrame(self.root, self.agendamento_repository, self.usuario_id, filtro=None)
+            
         self.main_frame.pack(fill="both", expand=True)
 
     def abrir_visualizar_perfil(self):
@@ -97,7 +102,7 @@ class AppController:
         self.main_frame = VisualizarUsuariosFrame(self.root, self.usuario_repo, usuarios)
         self.main_frame.pack(fill="both", expand=True)
 
-            
+
     def validar_login(self, username, senha):
         usuario = self.usuario_repo.validar_usuario(username, senha)
         if usuario:
@@ -123,3 +128,9 @@ class AppController:
         usuario_id = self.usuario_id
         return self.usuario_repo.obter_usuario_logado_email(usuario_id)
 
+    def obter_nome_usuario(self):
+        if self.usuario_id is not None:
+            usuario = self.usuario_repo.obter_usuario_por_id(self.usuario_id)
+            if usuario:
+                return usuario.nome
+        return "Usuário"
