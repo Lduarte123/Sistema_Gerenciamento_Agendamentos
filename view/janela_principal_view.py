@@ -18,11 +18,11 @@ class MainFrame(ctk.CTkFrame):
         self.container = ctk.CTkFrame(self, fg_color="transparent")
         self.container.pack(expand=True, fill="both")
 
-        # Frame superior para organizar relógio, data e botão de logout
+        # Frame superior para relógio, data e botão de logout
         self.frame_superior = ctk.CTkFrame(self.container, fg_color="transparent")
         self.frame_superior.pack(fill="x", padx=10, pady=10)
 
-        # Sub-frame para o relógio e a data, alinhado à esquerda
+        # Sub-frame para relógio e data
         self.left_frame = ctk.CTkFrame(self.frame_superior, fg_color="transparent")
         self.left_frame.pack(side="left")
 
@@ -53,18 +53,48 @@ class MainFrame(ctk.CTkFrame):
         self.logout_button = ctk.CTkButton(
             self.frame_superior,
             text="Sair",
-            command=self.controller.logout,  # Chama o método logout no controller
+            command=self.controller.logout,
             width=70,
             height=30
         )
         self.logout_button.pack(side="right")
 
+        # Frame do usuário - pode ser ajustado independentemente
+        nome_usuario = self.controller.obter_nome_usuario()
+        tamanho_texto = len(nome_usuario) * 10
+        
+        self.frame_usuario = ctk.CTkFrame(
+            self.container,  # Mantém no container principal
+            fg_color="#1a75ff",
+            corner_radius=20,
+            width=tamanho_texto + 40,
+            height=40
+        )
+        # Adiciona o evento de clique ao frame
+        self.frame_usuario.bind("<Button-1>", lambda e: self.controller.abrir_visualizar_perfil())
+        self.frame_usuario.place(x=10, rely=0.99, anchor="sw")  # Alterado de 0.93 para 0.97
+
+        # Força o frame a manter o tamanho definido
+        self.frame_usuario.grid_propagate(False)
+        self.frame_usuario.pack_propagate(False)
+
+        self.label_usuario = ctk.CTkLabel(
+            self.frame_usuario,
+            text=nome_usuario,
+            font=(constante.get_fonte_data()),
+            text_color="white",
+            anchor="center"
+        )
+        # Também adiciona o evento de clique à label do usuário
+        self.label_usuario.bind("<Button-1>", lambda e: self.controller.abrir_visualizar_perfil())
+        self.label_usuario.place(relx=0.5, rely=0.5, anchor="center")
+
         # Frame principal dos botões
         self.botao_frame = ctk.CTkFrame(
-            self.container, 
+            self.container,
             border_width=2,
             border_color="gray",
-            fg_color="#1C1C1C", 
+            fg_color="#1C1C1C",
             corner_radius=10,
             width=500,
             height=500
@@ -94,8 +124,6 @@ class MainFrame(ctk.CTkFrame):
         )
         self.button_c.pack(side="left", padx=20, pady=15)
 
-        self.botao_frame.pack(expand=True)
-
     def carregar_imagem(self, caminho, tamanho):
         imagem = Image.open(caminho)
         imagem = imagem.resize(tamanho)
@@ -105,7 +133,7 @@ class MainFrame(ctk.CTkFrame):
         agora = datetime.now()
         hora_atual = agora.strftime("%H:%M:%S")
         data_atual = agora.strftime("%d/%m/%Y")
-        
+
         self.label_relogio.configure(text=hora_atual)
         self.label_data.configure(text=data_atual)
         self.after(1000, self.atualizar_relogio)
