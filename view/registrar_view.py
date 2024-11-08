@@ -66,11 +66,11 @@ class RegisterView(ctk.CTkFrame):
 
         # Botão de registro
         self.register_button = ctk.CTkButton(self, text="Registrar", command=self.register, width=300, height=40)
-        self.register_button.pack(pady=20)
+        self.register_button.pack(pady=2)
 
         # Botão de voltar
         self.back_button = ctk.CTkButton(self, text="Voltar", command=self.voltar, width=300, height=40)
-        self.back_button.pack(pady=10)
+        self.back_button.pack(pady=5)
 
     def open_calendar(self):
         self.calendar_window = Toplevel(self)
