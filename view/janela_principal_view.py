@@ -137,3 +137,6 @@ class MainFrame(ctk.CTkFrame):
         self.label_relogio.configure(text=hora_atual)
         self.label_data.configure(text=data_atual)
         self.after(1000, self.atualizar_relogio)
+
+
+# fix
