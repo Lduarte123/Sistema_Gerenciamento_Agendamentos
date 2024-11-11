@@ -103,5 +103,22 @@ class UsuarioRepository:
             print(f"Erro ao listar usuários: {e}")
             return []
 
+    def excluir_usuario(self, usuario_id):
+        try:
+            usuario = self.session.query(UsuarioModel).filter_by(id=usuario_id).first()
+            if usuario:
+                self.session.delete(usuario)
+                self.session.commit()
+                messagebox.showinfo("Sucesso", "Usuário excluído com sucesso.")
+                return True
+            else:
+                messagebox.showerror("Erro", "Usuário não encontrado.")
+                return False
+        except Exception as e:
+            self.session.rollback()
+            messagebox.showerror("Erro", f"Ocorreu um erro ao excluir o usuário: {e}")
+            return False
+
+
 
 

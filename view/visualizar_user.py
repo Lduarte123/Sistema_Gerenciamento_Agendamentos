@@ -41,6 +41,11 @@ class VisualizarUsuariosFrame(ctk.CTkFrame):
         self.btn_editar = ctk.CTkButton(self.botao_frame, text="Editar", command=self.editar_usuario)
         self.btn_editar.pack(side="left", padx=(0, 10))
 
+        # Botão de Excluir
+        self.btn_excluir = ctk.CTkButton(self.botao_frame, text="Excluir", command=self.excluir_usuario)
+        self.btn_excluir.pack(side="right", padx=(0, 10))
+
+
         
         self.atualizar_tabela(usuarios)
 
@@ -60,4 +65,24 @@ class VisualizarUsuariosFrame(ctk.CTkFrame):
     def voltar(self):
         self.master.controller.exibir_tela_inicial()
 
-    
+
+    def excluir_usuario(self):
+        # Verifica se algum item foi selecionado na Treeview
+        item_selecionado = self.tree.selection()
+        if item_selecionado:
+            # Exibe uma mensagem de confirmação antes de excluir
+            confirmation = messagebox.askyesno("Confirmar Exclusão", "Tem certeza que deseja excluir este usuário?")
+            if confirmation:
+                # Obtém o ID do usuário selecionado
+                usuario_id = self.tree.item(item_selecionado[0], "values")[0]
+                
+                # Chama o método excluir_usuario do repositório
+                if self.usuario_repo.excluir_usuario(usuario_id):
+                    messagebox.showinfo("Sucesso", "Usuário excluído com sucesso!")
+                    self.atualizar_tabela(self.usuario_repo.listar_usuarios())  # Atualiza a tabela
+                else:
+                    messagebox.showerror("Erro", "Erro ao excluir o usuário. Tente novamente.")
+                return
+        
+        # Caso nenhum item tenha sido selecionado
+        messagebox.showerror("Erro", "Selecione um usuário para excluir.")
