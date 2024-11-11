@@ -17,6 +17,7 @@ class VerificacaoEmail:
     def gerar_codigo(self):
         self.codigo = random.randint(100000, 999999)
         self.timestamp = datetime.now()
+        print(self.codigo)
         return self.codigo
     
     def enviar_email(self):

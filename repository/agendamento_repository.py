@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from model.models import AgendamentoModel
+from model.models import UsuarioModel
 from util.constantes import Constante
 from util.data_base_cfg import Config
 from model.models import Base
@@ -42,7 +43,19 @@ class AgendamentoRepository:
         self.session.commit()
 
     def listar_agendamentos(self):
-        return self.session.query(AgendamentoModel).all()
+        """
+        Retorna todos os agendamentos com o nome e o email do usuário associado.
+        """
+        agendamentos = self.session.query(
+            AgendamentoModel, 
+            UsuarioModel.nome, 
+            UsuarioModel.email
+        ).join(
+            UsuarioModel, UsuarioModel.id == AgendamentoModel.usuario_id
+        ).all()
+
+        # O resultado será uma lista de tuplas (agendamento, nome, email)
+        return agendamentos
 
     def atualizar_agendamento(self, agendamento_atualizado):
         agendamento_existente = self.session.query(AgendamentoModel).filter_by(id=agendamento_atualizado.id).first()
@@ -70,3 +83,9 @@ class AgendamentoRepository:
         agendamento = self.session.query(AgendamentoModel).filter_by(id=agendamento_id).first()
         agendamento.status = constante.get_status_cancelado()
         self.session.commit()
+
+    def obter_agendamentos_por_termo(self, termo):
+        return self.session.query(AgendamentoModel).filter(
+            AgendamentoModel.nome.ilike(f"%{termo}%")
+        ).all()
+
