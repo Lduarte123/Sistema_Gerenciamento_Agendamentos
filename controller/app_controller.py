@@ -66,7 +66,7 @@ class AppController:
             self.main_frame.pack_forget()
 
         if self.usuario_tipo_admin:
-            self.main_frame = VisualizarAdminFrame(self.root, self.agendamento_repository, self.usuario_id, filtro=None)
+            self.main_frame = VisualizarAdminFrame(self.root, self.agendamento_repository, self.usuario_id)
         else:
             self.main_frame = VisualizarFrame(self.root, self.agendamento_repository, self.usuario_id, filtro=None)
             
