@@ -3,7 +3,11 @@ from tkinter import ttk, messagebox
 from repository.agendamento_repository import AgendamentoRepository
 from model.models import AgendamentoModel as Agendamento
 from view.editar_agendamento_view import Editar
-from datetime import datetime
+from datetime import datetime, timedelta
+from services.emails import VerificacaoEmail
+import schedule
+import time
+import threading
 
 class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
     def __init__(self, master, agendamento_repository, usuario_id, filtro):
@@ -76,6 +80,13 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
 
         self.btn_cancelar = ctk.CTkButton(self.botao_frame, text="Cancelar Agendamento", command=self.cancelar_agendamento)
         self.btn_cancelar.pack(side="left", padx=(10, 20))
+
+        # Adicionando o botão de envio de código por email
+        self.btn_enviar_codigo_email = ctk.CTkButton(self.botao_frame, text="Enviar Código por E-mail", command=self.enviar_codigo_email)
+        self.btn_enviar_codigo_email.pack(side="left", padx=(10, 20))
+        
+        # Iniciar o agendador em uma thread separada
+        threading.Thread(target=self.iniciar_agendador, daemon=True).start()
 
                 # Chama a atualização da tabela após os botões terem sido criados
         self.atualizar_tabela()
@@ -246,3 +257,47 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
                                                     agendamento.descricao, agendamento.status))
         else:
             messagebox.showinfo("Informação", "Digite um termo para pesquisar.")
+
+    def iniciar_agendador(self):
+        # Agendar a verificação para ser executada a cada dia
+        schedule.every().day.at("09:00").do(self.verificar_agendamentos_proximos)
+
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
+
+    def verificar_agendamentos_proximos(self):
+        """Verifica se há agendamentos que começam em 5 dias e envia o código."""
+        agendamentos_proximos = self.obter_agendamentos_proximos()
+
+        for agendamento in agendamentos_proximos:
+            if hasattr(agendamento, 'email'):
+                # Cria uma instância da classe VerificacaoEmail e envia o código
+                verificacao_email = VerificacaoEmail(agendamento.email)
+                verificacao_email.solicitar_codigo_verificacao(self)
+
+                print(f"Código de verificação enviado para {agendamento.email}.")
+            else:
+                print(f"O agendamento com ID {agendamento.id} não possui um e-mail associado.")
+
+    def enviar_codigo_email(self):
+        # ... código existente para enviar código manualmente ...
+        pass
+
+    def obter_agendamentos_proximos(self):
+        """Retorna os agendamentos que ocorrem nos próximos 5 dias."""
+        agendamentos = self.agendamento_repository.listar_agendamentos_por_usuario(self.usuario_id)
+        agendamentos_proximos = []
+
+        hoje = datetime.today()
+        for agendamento in agendamentos:
+            if isinstance(agendamento.data, str):
+                data_agendamento = datetime.strptime(agendamento.data, "%Y-%m-%d")  # Ajuste o formato conforme necessário
+            else:
+                data_agendamento = agendamento.data
+
+            # Verifica se o agendamento ocorre exatamente em 5 dias
+            if hoje + timedelta(days=5) == data_agendamento:
+                agendamentos_proximos.append(agendamento)
+
+        return agendamentos_proximos
