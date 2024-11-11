@@ -2,6 +2,8 @@ import customtkinter as ctk
 from tkinter import messagebox
 from services.emails import VerificacaoEmail
 from util.constantes import Constante
+from services.emails import VerificacaoEmail
+from view.redefinir_senha import RedefinirSenhaWindow
 
 constante = Constante()
 
@@ -37,6 +39,15 @@ class LoginView(ctk.CTkFrame):
 
         self.register_button = ctk.CTkButton(self, text="Registrar Novo Usuário", command=self.open_register, width=300, height=40)
         self.register_button.pack(pady=10)
+
+        self.forgot_password_label = ctk.CTkLabel(self, text="Esqueceu sua senha? Redefina", font=("Arial", 12, "underline"), fg_color="transparent", text_color="blue", cursor="hand2")
+        self.forgot_password_label.pack(pady=10)
+        self.forgot_password_label.bind("<Button-1>", self.abrir_redefinir_senha)  # Aqui estamos usando o bind para o evento de clique
+
+    def abrir_redefinir_senha(self, event=None):  # Adiciona 'event' para capturar o argumento extra
+        # Corrigido: Agora passamos o 'title' para a janela
+        janela_redefinir = RedefinirSenhaWindow(self.master, title="Redefinir Senha")  # Passa o título corretamente
+        janela_redefinir.grab_set()  # Mantém a janela de redefinir senha na frente da janela principal
 
     def login(self):
         username = self.username_entry.get()

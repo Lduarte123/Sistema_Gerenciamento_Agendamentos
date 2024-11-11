@@ -102,6 +102,27 @@ class UsuarioRepository:
         except Exception as e:
             print(f"Erro ao listar usuários: {e}")
             return []
+        
+    def atualizar_senha(self, email, nova_senha):
+        """
+        Atualiza a senha do usuário no banco de dados com base no e-mail.
+        """
+        try:
+            usuario = self.session.query(UsuarioModel).filter_by(email=email).first()
+            if usuario:
+                # Atualiza a senha do usuário
+                usuario.senha = nova_senha
+                self.session.commit()
+                messagebox.showinfo("Sucesso", "Senha atualizada com sucesso.")
+                return True
+            else:
+                messagebox.showerror("Erro", "Usuário não encontrado.")
+                return False
+        except Exception as e:
+            self.session.rollback()
+            print(f"Erro ao atualizar a senha: {e}")
+            messagebox.showerror("Erro", "Erro ao atualizar a senha. Tente novamente.")
+            return False
 
 
 

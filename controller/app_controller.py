@@ -1,3 +1,4 @@
+import customtkinter as ctk
 from view.criar_agendamento_view import CriarAgendamentoFrame
 from view.visualizar_view import VisualizarFrame
 from view.janela_principal_view import MainFrame
@@ -9,8 +10,10 @@ from repository.usuario_repository import UsuarioRepository
 from view.visualizar_perfil import VisualizarPerfilFrame
 from util.constantes import Constante
 from view.visualizar_user import VisualizarUsuariosFrame
-from view.admin_view  import AdminFrame
+from view.admin_view import AdminFrame
 from view.admin_agendamentos import VisualizarAdminFrame
+from services.emails import VerificacaoEmail
+from view.redefinir_senha import RedefinirSenhaWindow  # Certifique-se de que a janela de redefinir senha está importada
 
 constante = Constante()
 
@@ -18,11 +21,12 @@ class AppController:
     def __init__(self, root):
         self.root = root
         self.agendamento_model = AgendamentoModel()
-        self.agendamento_repository = AgendamentoRepository() 
+        self.agendamento_repository = AgendamentoRepository()
         self.usuario_repo = UsuarioRepository()
         self.main_frame = None
         self.usuario_id = None
         self.usuario_tipo_admin = False
+        self.verificacao_email = None  # Instância do serviço de verificação de e-mail
         self.exibir_tela_login()
 
     # Função de logout
@@ -102,7 +106,6 @@ class AppController:
         self.main_frame = VisualizarUsuariosFrame(self.root, self.usuario_repo, usuarios)
         self.main_frame.pack(fill="both", expand=True)
 
-
     def validar_login(self, username, senha):
         usuario = self.usuario_repo.validar_usuario(username, senha)
         if usuario:
@@ -134,3 +137,36 @@ class AppController:
             if usuario:
                 return usuario.nome
         return "Usuário"
+
+    def iniciar_recuperacao_senha(self):
+        """Inicia o processo de recuperação de senha"""
+        email = self.obter_emails_cadastrados()  # Pode ser um método que retorna os emails cadastrados
+        if email:
+            self.verificacao_email = VerificacaoEmail(email)  # Instancia a classe de verificação de e-mail
+            self.verificacao_email.solicitar_codigo_verificacao(self.root)  # Exibe a tela para inserir o código
+        else:
+            print("Email não encontrado")
+
+    def validar_codigo_recuperacao_senha(self, codigo_inserido):
+        """Valida o código de verificação enviado por e-mail"""
+        if self.verificacao_email.validar_codigo(codigo_inserido):
+            # Se o código for válido, abrir a tela de redefinição de senha
+            self.abrir_tela_redefinir_senha()
+        else:
+            print("Código de verificação inválido")
+
+    def abrir_tela_redefinir_senha(self):
+        """Exibe a tela para redefinir a senha"""
+        if self.main_frame:
+            self.main_frame.pack_forget()
+
+        self.main_frame = RedefinirSenhaWindow(self.root, "Recuperação de Senha", self.redefinir_senha)
+        self.main_frame.pack(fill="both", expand=True)
+
+    def redefinir_senha(self, nova_senha):
+        """Redefine a senha do usuário após a validação do código"""
+        if self.usuario_id:
+            self.usuario_repo.atualizar_senha(self.usuario_id, nova_senha)
+            print("Senha redefinida com sucesso!")
+        else:
+            print("Erro: ID do usuário não encontrado")
