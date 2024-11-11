@@ -110,6 +110,7 @@ class RegisterView(ctk.CTkFrame):
         data_nasc = self.data_nasc_var.get()
         cidade = self.cidade_entry.get()
         sexo = self.sexo_entry.get()
+        tipo = "padrão"
 
         # Verifica se todos os campos estão preenchidos
         if not all([nome, senha, email, data_nasc, cidade, sexo]):
@@ -122,7 +123,7 @@ class RegisterView(ctk.CTkFrame):
             messagebox.showerror(constante.get_erro(), "Erro ao registrar usuário: o e-mail já está em uso.")
             return
 
-        resultado = self.controller.registrar_usuario(nome, email, senha, data_nasc, cidade, sexo)
+        resultado = self.controller.registrar_usuario(nome, email, senha, data_nasc, cidade, sexo, tipo)
         if resultado:
             messagebox.showinfo("Sucesso", "Usuário registrado com sucesso!")
             self.voltar()

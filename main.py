@@ -14,7 +14,7 @@ class App(ctk.CTk):
     def __init__(self):
         super().__init__()
         self.title("Agendamento")
-
+        
         largura = self.winfo_screenwidth()
         altura = self.winfo_screenheight()
 
@@ -27,3 +27,5 @@ class App(ctk.CTk):
 if __name__ == "__main__":
     app = App()
     app.mainloop()
+
+    #a
