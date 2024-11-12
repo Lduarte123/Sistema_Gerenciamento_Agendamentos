@@ -11,9 +11,9 @@ class MainFrame(ctk.CTkFrame):
         self.controller = controller
         self.grid(row=0, column=0, sticky="nsew")
 
-        self.imagem_agendar = self.carregar_imagem("assets/image_c.png", (80, 80))
-        self.imagem_visualizar = self.carregar_imagem("assets/image_v.png", (80, 80))
-        self.imagem_perfil = self.carregar_imagem("assets/human.png", (80, 80))
+        self.imagem_agendar = self.carregar_imagem("D:\\Users\\Aluno\\Documents\\Sistema de cadastro\\Sistema_Gerenciamento_Agendamentos\\assets\\image_c.png", (80, 80))
+        self.imagem_visualizar = self.carregar_imagem("D:\\Users\\Aluno\\Documents\\Sistema de cadastro\\Sistema_Gerenciamento_Agendamentos\\assets\\image_v.png", (80, 80))
+        self.imagem_perfil = self.carregar_imagem("D:\\Users\\Aluno\\Documents\\Sistema de cadastro\\Sistema_Gerenciamento_Agendamentos\\assets\\human.png", (80, 80))
 
         self.container = ctk.CTkFrame(self, fg_color="transparent")
         self.container.pack(expand=True, fill="both")

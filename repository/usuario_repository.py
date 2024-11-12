@@ -6,6 +6,7 @@ from model.models import UsuarioModel
 from util.constantes import Constante
 from util.data_base_cfg import Config
 from model.models import Base
+import customtkinter as ctk
 
 constante = Constante()
 config = Config()
@@ -102,6 +103,4 @@ class UsuarioRepository:
         except Exception as e:
             print(f"Erro ao listar usuários: {e}")
             return []
-
-
 
