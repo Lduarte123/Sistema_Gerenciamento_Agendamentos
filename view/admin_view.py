@@ -16,7 +16,7 @@ class AdminFrame(ctk.CTkFrame):
         self.imagem_perfil = self.carregar_imagem("assets/human.png", (80, 80))
         self.imagem_listar_todos = self.carregar_imagem("assets/listagem_todos.png", (80, 80))
         self.imagem_listar_user = self.carregar_imagem("assets/listar_user.png", (80, 80))
-
+        self.imagem_sino = self.carregar_imagem("assets/sino.png", (40, 40))  # Ícone do sino
 
         self.container = ctk.CTkFrame(self, fg_color="transparent")
         self.container.pack(expand=True, fill="both")
@@ -90,10 +90,26 @@ class AdminFrame(ctk.CTkFrame):
 
         self.botao_frame.pack(expand=True)
 
+        # Botão de notificações (ícone de sino) no canto superior direito
+        self.botao_notificacoes = ctk.CTkButton(
+            self.container,
+            text="Notificações", 
+            image=self.imagem_sino, 
+            width=40, height=40, 
+            corner_radius=20, 
+            command=self.exibir_notificacoes
+        )
+        # Ajuste a posição para não ficar muito colado à borda direita
+        self.botao_notificacoes.place(x=self.winfo_width() - 80, y=20)  # Agora está 80px da borda direita
+
+        # Atualiza a posição do botão de notificações quando a janela é redimensionada
+        self.container.bind("<Configure>", self.atualizar_posicao_notificacoes)
+
     def carregar_imagem(self, caminho, tamanho):
+        # Carregar a imagem usando PIL e depois convertê-la para CTkImage
         imagem = Image.open(caminho)
         imagem = imagem.resize(tamanho)
-        return ImageTk.PhotoImage(imagem)
+        return ctk.CTkImage(light_image=imagem, dark_image=imagem, size=tamanho)  # Usando CTkImage
 
     def atualizar_relogio(self):
         agora = datetime.now()
@@ -103,3 +119,12 @@ class AdminFrame(ctk.CTkFrame):
         self.label_relogio.configure(text=hora_atual)
         self.label_data.configure(text=data_atual)
         self.after(1000, self.atualizar_relogio)
+
+    def exibir_notificacoes(self):
+        # Função de exemplo para exibir notificações
+        print("Notificações clicadas!")
+        # Aqui você pode implementar a lógica para mostrar um pop-up, abrir uma nova tela ou qualquer ação.
+
+    def atualizar_posicao_notificacoes(self, event):
+        # Atualiza a posição do sino quando a janela for redimensionada
+        self.botao_notificacoes.place(x=self.winfo_width() - 190, y=20)
