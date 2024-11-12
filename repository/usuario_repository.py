@@ -113,7 +113,6 @@ class UsuarioRepository:
                 # Atualiza a senha do usuário
                 usuario.senha = nova_senha
                 self.session.commit()
-                messagebox.showinfo("Sucesso", "Senha atualizada com sucesso.")
                 return True
             else:
                 messagebox.showerror("Erro", "Usuário não encontrado.")

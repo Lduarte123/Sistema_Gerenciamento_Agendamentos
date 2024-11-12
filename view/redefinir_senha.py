@@ -7,14 +7,14 @@ class RedefinirSenhaWindow(ctk.CTkToplevel):
     def __init__(self, master, title):
         super().__init__(master)
         self.title(title)
-        self.geometry("300x150")
+        self.geometry("350x200")  # Tamanho maior para as telas posteriores
         self.resizable(False, False)
 
         # Centralizar a janela
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
-        x = (screen_width // 2) - (300 // 2)
-        y = (screen_height // 2) - (150 // 2)
+        x = (screen_width // 2) - (350 // 2)
+        y = (screen_height // 2) - (200 // 2)
         self.geometry(f"350x200+{x}+{y}")  # Centraliza a nova janela
 
         # Inicializar variáveis
@@ -22,20 +22,21 @@ class RedefinirSenhaWindow(ctk.CTkToplevel):
         self.verificacao_email = None
 
         # Primeira tela: Solicitar E-mail
-        self.label = ctk.CTkLabel(self, text="Digite seu e-mail:")
-        self.label.pack(pady=(20, 5))
+        self.label = ctk.CTkLabel(self, text="Digite seu e-mail:", font=("Arial", 16, "bold"))
+        self.label.pack(pady=(20, 9))
 
-        self.email_entry = ctk.CTkEntry(self, placeholder_text="Digite seu e-mail", width=200)
-        self.email_entry.pack(pady=(5, 10))
+        self.email_entry = ctk.CTkEntry(self, placeholder_text="E-mail", width=200)
+        self.email_entry.pack(pady=(5, 15))
 
+        # Frame de botões para a primeira tela
         self.button_frame = ctk.CTkFrame(self)
-        self.button_frame.pack(pady=(5, 10))
+        self.button_frame.pack(pady=(10, 10))
 
         self.ok_button = ctk.CTkButton(self.button_frame, text="OK", command=self.enviar_codigo, width=95)
         self.ok_button.pack(side="left", padx=5)
 
         self.cancel_button = ctk.CTkButton(self.button_frame, text="Cancelar", command=self.on_cancel, width=95)
-        self.cancel_button.pack(side="right", padx=5)
+        self.cancel_button.pack(side="left", padx=5)
 
     def enviar_codigo(self):
         email = self.email_entry.get()
@@ -48,17 +49,34 @@ class RedefinirSenhaWindow(ctk.CTkToplevel):
             codigo = self.verificacao_email.gerar_codigo()
             self.verificacao_email.enviar_email()
 
-            # Fecha a tela atual e abre a tela de validação do código
-            self.label.configure(text="Digite o código enviado para o e-mail:")
-            self.email_entry.destroy()  # Remove o campo de e-mail
-            self.ok_button.configure(text="Validar Código", command=self.validar_codigo)
-
-            # Cria o campo para inserir o código
-            self.codigo_entry = ctk.CTkEntry(self, placeholder_text="Digite o código", width=200)
-            self.codigo_entry.pack(pady=(5, 10))
+            # Atualiza a interface para a tela de código
+            self.atualizar_tela_validacao_codigo()
 
         else:
             messagebox.showerror("Erro", "Por favor, insira um e-mail válido.")
+
+    def atualizar_tela_validacao_codigo(self):
+        # Atualiza a interface para permitir a inserção do código de verificação
+        self.label.configure(text="Digite o código enviado para o e-mail:")
+        self.email_entry.destroy()  # Remove o campo de e-mail
+
+        # Cria o campo para inserir o código
+        self.codigo_entry = ctk.CTkEntry(self, placeholder_text="Digite o código", width=200)
+        self.codigo_entry.pack(pady=(5, 10))
+
+        # Remove o Frame de botões da tela anterior
+        self.button_frame.destroy()
+
+        # Cria um novo Frame para os botões da tela de código, com fundo transparente
+        self.button_frame = ctk.CTkFrame(self, fg_color="transparent")
+        self.button_frame.pack(pady=(10, 10))
+
+        # Botões da tela de código (de forma horizontal)
+        self.ok_button = ctk.CTkButton(self.button_frame, text="Validar Código", command=self.validar_codigo, width=95)
+        self.ok_button.pack(side="left", padx=5)
+
+        self.cancel_button = ctk.CTkButton(self.button_frame, text="Cancelar", command=self.on_cancel, width=95)
+        self.cancel_button.pack(side="left", padx=5)
 
     def validar_codigo(self):
         codigo_inserido = self.codigo_entry.get()
@@ -83,6 +101,20 @@ class RedefinirSenhaWindow(ctk.CTkToplevel):
 
         self.confirm_senha_entry = ctk.CTkEntry(self, placeholder_text="Confirmar senha", show="*", width=200)
         self.confirm_senha_entry.pack(pady=(5, 10))
+
+        # Atualiza os botões
+        self.button_frame.destroy()
+
+        # Cria um novo Frame para os botões da tela de redefinição, com fundo transparente
+        self.button_frame = ctk.CTkFrame(self, fg_color="transparent")
+        self.button_frame.pack(pady=(10, 10))
+
+        # Botões da tela de redefinição de senha (de forma horizontal)
+        self.ok_button = ctk.CTkButton(self.button_frame, text="Redefinir Senha", command=self.salvar_nova_senha, width=95)
+        self.ok_button.pack(side="left", padx=5)
+
+        self.cancel_button = ctk.CTkButton(self.button_frame, text="Cancelar", command=self.on_cancel, width=95)
+        self.cancel_button.pack(side="left", padx=5)
 
     def salvar_nova_senha(self):
         senha = self.senha_entry.get()

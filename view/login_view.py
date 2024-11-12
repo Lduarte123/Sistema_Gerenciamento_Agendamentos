@@ -40,7 +40,7 @@ class LoginView(ctk.CTkFrame):
         self.register_button = ctk.CTkButton(self, text="Registrar Novo Usuário", command=self.open_register, width=300, height=40)
         self.register_button.pack(pady=10)
 
-        self.forgot_password_label = ctk.CTkLabel(self, text="Esqueceu sua senha? Redefina", font=("Arial", 12, "underline"), fg_color="transparent", text_color="blue", cursor="hand2")
+        self.forgot_password_label = ctk.CTkLabel(self, text="Esqueceu sua senha? Redefina", font=("Arial", 12, "underline"), fg_color="transparent", text_color="white", cursor="hand2")
         self.forgot_password_label.pack(pady=10)
         self.forgot_password_label.bind("<Button-1>", self.abrir_redefinir_senha)  # Aqui estamos usando o bind para o evento de clique
 
