@@ -25,12 +25,14 @@ class LoginView(ctk.CTkFrame):
 
         self.username_entry = ctk.CTkEntry(self.entry_frame, placeholder_text="Digite seu email", width=300, height=40)
         self.username_entry.grid(row=1, column=0, padx=17, pady=5)
+        self.username_entry.bind("<Return>", self.login_on_enter)  # Bind do Enter
 
         self.password_label = ctk.CTkLabel(self.entry_frame, text="Senha:", font=("Arial", 14, "bold"))
         self.password_label.grid(row=2, column=0, sticky='w', padx=22, pady=5)
 
         self.password_entry = ctk.CTkEntry(self.entry_frame, placeholder_text="Digite sua senha", show="*", width=300, height=40)
         self.password_entry.grid(row=3, column=0, padx=17, pady=5)
+        self.password_entry.bind("<Return>", self.login_on_enter)  # Bind do Enter
 
         self.login_button = ctk.CTkButton(self, text="Entrar", command=self.login, width=300, height=40)
         self.login_button.pack(pady=(20, 5)) 
@@ -54,3 +56,7 @@ class LoginView(ctk.CTkFrame):
 
     def open_register(self):
         self.controller.exibir_tela_registro()
+
+    def login_on_enter(self, event=None):
+        """Chama o método de login quando Enter é pressionado."""
+        self.login()

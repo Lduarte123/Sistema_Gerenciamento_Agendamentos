@@ -81,9 +81,9 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         self.btn_cancelar = ctk.CTkButton(self.botao_frame, text="Cancelar Agendamento", command=self.cancelar_agendamento)
         self.btn_cancelar.pack(side="left", padx=(10, 20))
 
-        # Adicionando o botão de envio de código por email
-        self.btn_enviar_codigo_email = ctk.CTkButton(self.botao_frame, text="Enviar Código por E-mail", command=self.enviar_codigo_email)
-        self.btn_enviar_codigo_email.pack(side="left", padx=(10, 20))
+        # Substituindo o botão de envio de código por e-mail
+        self.btn_enviar_lembrete_email = ctk.CTkButton(self.botao_frame, text="Enviar Lembrete por E-mail", command=self.enviar_lembrete_email)
+        self.btn_enviar_lembrete_email.pack(side="left", padx=(10, 20))
         
         # Iniciar o agendador em uma thread separada
         threading.Thread(target=self.iniciar_agendador, daemon=True).start()
@@ -280,9 +280,25 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
             else:
                 print(f"O agendamento com ID {agendamento.id} não possui um e-mail associado.")
 
-    def enviar_codigo_email(self):
-        # ... código existente para enviar código manualmente ...
-        pass
+    def enviar_lembrete_email(self):
+        """Envia lembretes de e-mail para os agendamentos que começam em 5 dias."""
+        agendamentos_proximos = self.obter_agendamentos_proximos()
+
+        if not agendamentos_proximos:
+            messagebox.showinfo("Sem agendamentos próximos", "Não há agendamentos dentro dos próximos 5 dias.")
+            return
+
+        for agendamento in agendamentos_proximos:
+            if hasattr(agendamento, 'email'):
+                # Instancia a classe VerificacaoEmail e envia o lembrete
+                verificacao_email = VerificacaoEmail(agendamento.email)
+                try:
+                    verificacao_email.solicitar_codigo_verificacao(self)  # Isso enviará o e-mail
+                    messagebox.showinfo("Lembrete Enviado", f"Lembrete enviado para {agendamento.email}.")
+                except Exception as e:
+                    messagebox.showerror("Erro ao Enviar", f"Não foi possível enviar o lembrete para {agendamento.email}. Erro: {str(e)}")
+            else:
+                messagebox.showerror("Erro", f"O agendamento com ID {agendamento.id} não possui um e-mail associado.")
 
     def obter_agendamentos_proximos(self):
         """Retorna os agendamentos que ocorrem nos próximos 5 dias."""
