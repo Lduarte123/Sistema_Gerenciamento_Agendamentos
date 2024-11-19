@@ -6,6 +6,7 @@ from model.models import UsuarioModel
 from util.constantes import Constante
 from util.data_base_cfg import Config
 from model.models import Base
+import customtkinter as ctk
 
 constante = Constante()
 config = Config()
@@ -118,7 +119,3 @@ class UsuarioRepository:
             self.session.rollback()
             messagebox.showerror("Erro", f"Ocorreu um erro ao excluir o usuário: {e}")
             return False
-
-
-
-
