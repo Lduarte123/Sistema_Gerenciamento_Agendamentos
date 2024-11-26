@@ -2,7 +2,7 @@ import customtkinter as ctk
 from tkinter import messagebox
 from services.emails import VerificacaoEmail
 from util.constantes import Constante
-
+from PIL import Image  # Importando apenas o PIL.Image
 
 constante = Constante()
 
@@ -15,13 +15,27 @@ class LoginView(ctk.CTkFrame):
         self.main_frame = ctk.CTkFrame(self, width=600, height=600, corner_radius=25)
         self.main_frame.pack(expand=True, padx=20, pady=20)  # Definir o tamanho do frame e espaçamento
 
-        # Criando o título
-        self.title_label = ctk.CTkLabel(self.main_frame, text="Olá, seja bem-vindo de volta!", font=(constante.get_fonte()))
-        self.title_label.pack(pady=(20, 2))
+        # Carregando a logo usando o PIL.Image
+        logo_image = Image.open("assets/awj.png")  # Substitua pelo caminho correto da sua imagem
+        logo_image = logo_image.resize((150, 150))  # Ajustando o tamanho da imagem
 
-        self.title_label = ctk.CTkLabel(self.main_frame, text="Ainda não possui uma conta? Registre-se agora!", font=("Helvetica", 10, "normal"))
-        self.title_label.pack(pady=(1, 10))
+        # Usando o CTkImage diretamente com a imagem PIL
+        self.logo_image = ctk.CTkImage(light_image=logo_image, size=(150, 150))
+        
+        # Exibindo a logo na parte superior do frame
+        self.logo_label = ctk.CTkLabel(self.main_frame, image=self.logo_image, text="")
+        self.logo_label.pack(pady=(20, 10))  # Logo no topo com espaçamento
 
+        # Criando o título (Este será o título real da tela de login)
+        self.title_label = ctk.CTkLabel(self.main_frame, text="Olá, seja bem-vindo de volta!", font=("Helvetica", 22, "bold"))
+        self.title_label.pack(pady=(10, 2))
+
+        # Criando o subtítulo (Agora atuando como um botão)
+        self.sub_title_label = ctk.CTkLabel(self.main_frame, text="Ainda não possui uma conta? Registre-se agora!", font=("Helvetica", 12, "normal"))
+        self.sub_title_label.pack(pady=(1, 10))
+
+        # Adicionando o bind para o clique no subtítulo, redirecionando para o registro
+        self.sub_title_label.bind("<Button-1>", self.open_register)
 
         # Criando o frame para as entradas
         self.entry_frame = ctk.CTkFrame(self.main_frame, fg_color="transparent", width=340, height=200)
@@ -37,6 +51,9 @@ class LoginView(ctk.CTkFrame):
         self.username_entry = ctk.CTkEntry(self.entry_frame, placeholder_text="Seu Email", width=300, height=35)
         self.username_entry.grid(row=1, column=0, padx=17, pady=5)
 
+        # Adicionando o bind para o campo de email, pressionando Enter para login
+        self.username_entry.bind("<Return>", self.handle_enter_key)
+
         # Adicionando o rótulo e a entrada de senha
         self.password_label = ctk.CTkLabel(self.entry_frame, text="Senha:", font=("Helvetica", 14, "bold"))
         self.password_label.grid(row=2, column=0, sticky='w', padx=22, pady=5)
@@ -44,9 +61,13 @@ class LoginView(ctk.CTkFrame):
         self.password_entry = ctk.CTkEntry(self.entry_frame, placeholder_text="Senha", show="•", width=300, height=35)
         self.password_entry.grid(row=3, column=0, padx=17, pady=(5, 0))
 
+        # Adicionando o bind para o campo de senha, pressionando Enter para login
+        self.password_entry.bind("<Return>", self.handle_enter_key)
+
         self.login_button = ctk.CTkButton(
             self.main_frame,
             text="Entrar",
+            font=("Helvetica", 14, "bold"),
             command=self.login,
             width=300,
             height=35,
@@ -61,6 +82,7 @@ class LoginView(ctk.CTkFrame):
         self.register_button = ctk.CTkButton(
             self.main_frame,
             text="Registre-se",
+            font=("Helvetica", 14, "bold"),
             command=self.open_register,
             width=300,
             height=35,
@@ -85,5 +107,10 @@ class LoginView(ctk.CTkFrame):
             return
         messagebox.showerror(constante.get_erro(), "Credenciais Inválidas")
 
-    def open_register(self):
+    def open_register(self, event=None):
+        """Redireciona para a tela de registro."""
         self.controller.exibir_tela_registro()
+
+    def handle_enter_key(self, event):
+        """Aciona o login quando a tecla Enter é pressionada."""
+        self.login()
