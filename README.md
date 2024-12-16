@@ -7,7 +7,7 @@ Sistema de Agendamento
 
 Este projeto consiste em um sistema de agendamento desenvolvido em Python, utilizando a biblioteca Tkinter para a interface gráfica. O sistema permite que os usuários gerenciem seus compromissos de forma simples e intuitiva, com funcionalidades de adição, edição, exclusão e visualização de compromissos.
 
-**3. Tecnologias Utilizadas**
+**Tecnologias Utilizadas**
 
 Linguagem: Python
 
