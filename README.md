@@ -1,69 +1,91 @@
-# ProjetoFInalTkinter
-**Documentação do Projeto:**
+# Sistema de Agendamento
 
-Sistema de Agendamento
+### Descrição do Projeto
 
-**1. Introdução**
+O Sistema de Agendamento é um aplicativo desenvolvido em Python, com uma interface gráfica intuitiva criada utilizando a biblioteca CustomTkinter. Este projeto foi realizado como Trabalho de Conclusão da UC4 do curso de Desenvolvimento de Sistemas no SENAC.
 
-Este projeto consiste em um sistema de agendamento desenvolvido em Python, utilizando a biblioteca Tkinter para a interface gráfica. O sistema permite que os usuários gerenciem seus compromissos de forma simples e intuitiva, com funcionalidades de adição, edição, exclusão e visualização de compromissos.
+Ele permite que os usuários gerenciem seus compromissos de maneira simples e eficiente. O sistema oferece funcionalidades como:
+- Adição de novos compromissos
+- Edição de compromissos existentes
+- Exclusão de eventos
+- Visualização detalhada de compromissos em um calendário.
 
-**Tecnologias Utilizadas**
+---
 
-Linguagem: Python
+### Tecnologias Utilizadas
 
-Interface Gráfica: Tkinter
+- **Linguagem de Programação:** Python
+- **Interface Gráfica:** CustomTkinter / Tkinter
+- **Banco de Dados:** PostgreSQL
 
-Banco de Dados: PostgreSQL
+#### Bibliotecas Principais
+- **[CustomTkinter](https://github.com/TomSchimansky/CustomTkinter):** Para criar interfaces mais personalizadas e atraentes.
+- **[Tkcalendar](https://github.com/j4321/tkcalendar):** Para manipulação de calendários e seleção de datas.
+- **[Pillow](https://pillow.readthedocs.io):** Para manipulação de imagens e adição de elementos visuais.
+- **[Datetime](https://docs.python.org/3/library/datetime.html):** Para trabalhar com datas e horas.
+- **[SQLAlchemy](https://www.sqlalchemy.org):** Para gerenciamento eficiente da conexão e manipulação do banco de dados.
 
-**Bibliotecas:**
+---
 
-CustomTkinter: Para criar interfaces mais personalizadas e atraentes.
+### Requisitos
 
-Tkcalendar: Para manipulação de calendários e seleção de datas.
+#### 1. Pré-requisitos
 
-Pillow: Para manipulação de imagens, permitindo a adição de ícones e elementos visuais.
+Certifique-se de ter as seguintes ferramentas instaladas no seu sistema:
+- Python (3.8 ou superior)
+- PostgreSQL (para o banco de dados)
 
-Datetime: Para trabalhar com datas e horas.
+#### 2. Instalação das Bibliotecas Necessárias
 
-SQLAlchemy: Para gerenciar a conexão e manipulação do banco de dados de forma eficiente.
-
-**4. Requisitos**
-
-**3.1 Pré-requisitos**
-
-Antes de executar o projeto, certifique-se de ter o Python instalado em seu sistema. Você também precisará do PostgreSQL para o banco de dados.
-
-**3.2 Bibliotecas**
-
-Instale as bibliotecas necessárias utilizando o pip:
-
-bash
+Instale as bibliotecas utilizando o pip:
+```bash
 pip install CustomTkinter tkcalendar Pillow psycopg2 SQLAlchemy
+```
 
-**4. Instalação**
+---
 
-Clone o repositório:
+### Instalação do Projeto
 
-git clone https://github.com/Lduarte123/ProjetoFInalTkinter.git
+1. **Clone o repositório:**
+   ```bash
+   git clone https://github.com/Lduarte123/ProjetoFInalTkinter.git
+   ```
 
-Navegue até o diretório do projeto:
-cd ProjetoFInalTkinter
-Configure o banco de dados PostgreSQL conforme as instruções do seu ambiente.
+2. **Navegue até o diretório do projeto:**
+   ```bash
+   cd ProjetoFInalTkinter
+   ```
 
-Execute o script principal:
-python app.py
+3. **Configure o Banco de Dados:**
+   - Configure o PostgreSQL conforme as instruções do seu ambiente.
+   - Certifique-se de criar o banco de dados e ajustar as credenciais no arquivo de configuração do projeto.
 
-**5. Uso**
+4. **Execute o script principal:**
+   ```bash
+   python app.py
+   ```
 
-Ao abrir o sistema, você verá a tela de login. Insira suas credenciais para acessar ou cadastre-se.
-Na tela principal, você poderá adicionar, visualizar, editar e excluir um evento.
-Use a visualização de calendário para selecionar datas e visualizar compromissos agendados.
+---
 
-**6. Contribuições**
+### Como Usar
 
-Agradecimentos aos seguintes colaboradores:
-- Marcos Vitor - [victorlima11](https://github.com/victorlima11)
-- Cauã Enzo - [cauaenzo](https://github.com/cauaenzo)
-- Lucas Duarte - [Lduarte123](https://github.com/Lduarte123/)
-- João Lucas - [Joaolucasos169](https://github.com/Joaolucasos169)
+1. **Tela de Login:**
+   - Ao abrir o sistema, insira suas credenciais para acessar.
+   - Caso ainda não tenha cadastro, crie uma nova conta.
 
+2. **Tela Principal:**
+   - Adicione novos compromissos com a opção de escolha de datas e horários.
+   - Edite ou exclua compromissos existentes de forma simples.
+   - Utilize a visualização do calendário para gerenciar seus compromissos com mais clareza.
+
+---
+
+### Colaboração
+
+Agradecemos as contribuições dos seguintes colaboradores:
+- **Marcos Vitor** - [victorlima11](https://github.com/victorlima11)
+- **Cauã Enzo** - [cauaenzo](https://github.com/cauaenzo)
+- **Lucas Duarte** - [Lduarte123](https://github.com/Lduarte123/)
+- **João Lucas** - [Joaolucasos169](https://github.com/Joaolucasos169)
+
+---
