@@ -11,8 +11,7 @@ class RegisterView(ctk.CTkFrame):
     def __init__(self, root, controller):
         super().__init__(root)
         self.controller = controller
-        
-        # Título
+
         self.label = ctk.CTkLabel(self, text="Registrar Novo Usuário", font=ctk.CTkFont(size=20, weight="bold"))
         self.label.pack(pady=(160, 20))
 
