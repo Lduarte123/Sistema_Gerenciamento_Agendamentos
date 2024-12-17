@@ -9,8 +9,8 @@ class VisualizarPerfilFrame(ctk.CTkFrame):
         self.usuario_info = usuario_info
 
         self.frame_principal = ctk.CTkFrame(self, border_width=2, corner_radius=10, fg_color="#1C1C1C", width=600, height=400)
-        self.frame_principal.pack(pady=50, padx=50, anchor="center")  # Centraliza o frame
-        self.frame_principal.pack_propagate(False)  # Desativa o ajuste automático de tamanho
+        self.frame_principal.pack(pady=50, padx=50, anchor="center")
+        self.frame_principal.pack_propagate(False)
 
         self.frame_nome = ctk.CTkFrame(self.frame_principal, fg_color="transparent")
         self.frame_nome.pack(pady=10)
@@ -54,8 +54,8 @@ class VisualizarPerfilFrame(ctk.CTkFrame):
         self.senha_label.pack(side="left", padx=5)
         
         self.senha_value = ctk.CTkEntry(self.frame_senha, show="*", font=ctk.CTkFont(size=16), width=200)
-        self.senha_value.insert(0, usuario_info.senha)  # Insere a senha
-        self.senha_value.configure(state="disabled")  # Desabilita edição
+        self.senha_value.insert(0, usuario_info.senha)
+        self.senha_value.configure(state="disabled") 
         self.senha_value.pack(side="left", padx=5)
 
         self.toggle_button = ctk.CTkButton(self.frame_senha, text="Mostrar", command=self.toggle_senha, width=80)
@@ -65,7 +65,7 @@ class VisualizarPerfilFrame(ctk.CTkFrame):
         self.frame_botoes.pack(pady=30)
         self.botao_voltar = ctk.CTkButton(self.frame_botoes, text="Voltar", command=self.voltar, width=100)
         self.botao_voltar.pack(side="left", padx=(10, 10))
-        self.botao_editar = ctk.CTkButton(self.frame_botoes, text="Editar", command=self.abrir_janela_edicao, width=100)  # Botão Editar chama a nova função
+        self.botao_editar = ctk.CTkButton(self.frame_botoes, text="Editar", command=self.abrir_janela_edicao, width=100)
         self.botao_editar.pack(side="left", padx=(10, 10))
 
         self.senha_visivel = False
@@ -97,7 +97,7 @@ class VisualizarPerfilFrame(ctk.CTkFrame):
         janela_edicao.title("Editar Perfil")
 
         nome_label = ctk.CTkLabel(janela_edicao, text="Nome:", font=ctk.CTkFont(size=16, weight="bold"))
-        nome_label.pack(pady=(10, 0))  # Espaçamento acima e abaixo
+        nome_label.pack(pady=(10, 0))
         nome_entry = ctk.CTkEntry(janela_edicao, width=150)
         nome_entry.insert(0, self.usuario_info.nome)
         nome_entry.pack(pady=10)
@@ -119,8 +119,7 @@ class VisualizarPerfilFrame(ctk.CTkFrame):
         frame_sexo = ctk.CTkFrame(janela_edicao, fg_color="transparent")
         frame_sexo.pack(pady=10)
 
-        genero_var = ctk.StringVar(value=self.usuario_info.sexo)  # Valor inicial baseado no perfil do usuário
-
+        genero_var = ctk.StringVar(value=self.usuario_info.sexo)
         masculino_radio = ctk.CTkRadioButton(frame_sexo, text="Masculino", variable=genero_var, value="Masculino")
         masculino_radio.pack(side="left", padx=10)
 

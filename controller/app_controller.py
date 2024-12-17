@@ -25,10 +25,9 @@ class AppController:
         self.usuario_tipo_admin = False
         self.exibir_tela_login()
 
-    # Função de logout
     def logout(self):
-        self.usuario_id = None  # Limpa o ID do usuário logado
-        self.exibir_tela_login()  # Volta para a tela de login
+        self.usuario_id = None
+        self.exibir_tela_login() 
 
     def exibir_tela_login(self):
         if self.main_frame:
@@ -87,18 +86,14 @@ class AppController:
             print(constante.get_erro_usuario_id_nao_definido())
 
     def abrir_listar_usuarios(self):
-        """Abre a tela de visualização de todos os usuários"""
         if self.main_frame:
-            self.main_frame.pack_forget()  # Remove o frame anterior
+            self.main_frame.pack_forget()
 
-        # Paginação (por exemplo, página 1 e 20 itens por página)
         pagina = 1
         itens_por_pagina = 20
 
-        # Obtém os usuários da primeira página
         usuarios = self.usuario_repo.listar_usuarios(pagina, itens_por_pagina)
-
-        # Cria o frame para visualizar todos os usuários
+        
         self.main_frame = VisualizarUsuariosFrame(self.root, self.usuario_repo, usuarios)
         self.main_frame.pack(fill="both", expand=True)
 

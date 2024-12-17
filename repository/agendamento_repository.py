@@ -43,9 +43,6 @@ class AgendamentoRepository:
         self.session.commit()
 
     def listar_agendamentos(self):
-        """
-        Retorna todos os agendamentos com o nome e o email do usuário associado.
-        """
         agendamentos = self.session.query(
             AgendamentoModel, 
             UsuarioModel.nome, 

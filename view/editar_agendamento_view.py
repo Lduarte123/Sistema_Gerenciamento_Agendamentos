@@ -47,7 +47,6 @@ class Editar(ctk.CTkToplevel):
         novo_horario = self.entry_horario.get()
         novo_local = self.entry_local.get()
 
-        # Chama a callback para atualizar os dados
         self.callback(novo_nome, nova_data, novo_horario, novo_local)
         self.fechar()
 

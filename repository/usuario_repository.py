@@ -84,18 +84,8 @@ class UsuarioRepository:
         return self.session.query(UsuarioModel).filter_by(tipo='admin', id=usuario_id).first() is not None
     
     def listar_usuarios(self, pagina=1, itens_por_pagina=20):
-        """
-        Retorna uma lista de usuários, com paginação.
-        
-        :param pagina: número da página para paginação (default 1)
-        :param itens_por_pagina: quantidade de itens por página (default 20)
-        :return: Lista de usuários da página solicitada
-        """
         try:
-            # Calculando o offset para a paginação
             offset = (pagina - 1) * itens_por_pagina
-            
-            # Realiza a consulta com a limitação de itens e o offset para paginação
             usuarios = self.session.query(UsuarioModel).offset(offset).limit(itens_por_pagina).all()
             
             return usuarios

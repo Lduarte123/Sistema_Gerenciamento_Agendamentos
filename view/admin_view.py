@@ -38,7 +38,6 @@ class AdminFrame(ctk.CTkFrame):
         )
         self.label_relogio.place(x=10, rely=0.25)
         
-        # Adiciona a data
         self.label_data = ctk.CTkLabel(
             self.frame_superior,
             text="",

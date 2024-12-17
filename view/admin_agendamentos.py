@@ -16,10 +16,8 @@ class VisualizarAdminFrame(ctk.CTkFrame):
         self.itens_por_pagina = 40
         self.total_agendamentos = 0
 
-        # Configuração da Treeview
         self.tree = ttk.Treeview(self, columns=("id", "nome", "nome_usuario", "email_usuario", "data", "horario", "local", "descricao", "status"), show='headings', height=42)
 
-        # Definindo as colunas e cabeçalhos
         self.tree.heading("id", text="ID", command=lambda: self.ordenar("id"))
         self.tree.heading("nome", text="Nome Agendamento", command=lambda: self.ordenar("nome"))
         self.tree.heading("nome_usuario", text="Nome Usuário", command=lambda: self.ordenar("nome_usuario"))
@@ -30,7 +28,6 @@ class VisualizarAdminFrame(ctk.CTkFrame):
         self.tree.heading("descricao", text="Descrição", command=lambda: self.ordenar("descricao"))
         self.tree.heading("status", text="Status", command=lambda: self.ordenar("status"))
 
-        # Definindo o tamanho das colunas
         self.tree.column("id", width=50)
         self.tree.column("nome", width=200)
         self.tree.column("nome_usuario", width=200)
@@ -43,7 +40,6 @@ class VisualizarAdminFrame(ctk.CTkFrame):
 
         self.tree.pack(pady=20, fill="both", expand=False)
 
-        # Frame para os botões
         self.botao_frame = ctk.CTkFrame(self)
         self.botao_frame.pack(pady=10)
 
@@ -65,31 +61,24 @@ class VisualizarAdminFrame(ctk.CTkFrame):
         self.btn_cancelar = ctk.CTkButton(self.botao_frame, text="Cancelar Agendamento", command=self.cancelar_agendamento)
         self.btn_cancelar.pack(side="left", padx=(10, 20))
 
-        # Chama a atualização da tabela após os botões terem sido criados
         self.atualizar_tabela()
 
-        # Inicializa a direção de ordenação
         self.ordenacao_direcao = {coluna: True for coluna in ["id", "nome", "nome_usuario", "email_usuario", "data", "horario", "local", "descricao", "status"]}
     
     def atualizar_tabela(self, agendamentos=None):
-        """Atualiza a tabela de agendamentos com os dados mais recentes."""
-        # Limpa a tabela antes de adicionar novos dados
         for row in self.tree.get_children():
             self.tree.delete(row)
 
-        # Obtém a lista completa de agendamentos, se não for fornecida
         if agendamentos is None:
             agendamentos = self.agendamento_repository.listar_agendamentos()
 
         self.total_agendamentos = len(agendamentos)
 
-        # Calcula os índices para a página atual
         inicio = self.pagina_atual * self.itens_por_pagina
         fim = inicio + self.itens_por_pagina
         agendamentos_pagina = agendamentos[inicio:fim]
 
         for agendamento, nome_usuario, email_usuario in agendamentos_pagina:
-            # Verifica a data e converte para o formato correto
             if isinstance(agendamento.data, str):
                 try:
                     data_agendamento = datetime.strptime(agendamento.data, "%Y-%m-%d")
@@ -98,22 +87,15 @@ class VisualizarAdminFrame(ctk.CTkFrame):
             else:
                 data_agendamento = agendamento.data
 
-            # Formata a data corretamente como string
-            data_formatada = data_agendamento.strftime("%d-%m-%Y")  # Formato dd-mm-aaaa
-
-            # Verifica o horário e converte para string, caso necessário
+            data_formatada = data_agendamento.strftime("%d-%m-%Y")
             if isinstance(agendamento.horario, str):
                 horario_formatado = agendamento.horario
             else:
-                horario_formatado = agendamento.horario.strftime("%H:%M")  # Formato de horário HH:MM
+                horario_formatado = agendamento.horario.strftime("%H:%M")
 
-            # Verifica valores vazios e insere valores padrão
             descricao = agendamento.descricao if agendamento.descricao else "Sem descrição"
             status = agendamento.status if agendamento.status else "Sem status"
             local = agendamento.local if agendamento.local else "Sem local"
-
-            # **Aqui está a correção**: A ordem das colunas precisa ser rigorosamente seguida.
-            # Inserir na ordem correta das colunas
             self.tree.insert('', 'end', values=(
                 agendamento.id,         # Coluna 1: ID do agendamento
                 agendamento.nome,       # Coluna 2: Nome do agendamento
@@ -126,7 +108,6 @@ class VisualizarAdminFrame(ctk.CTkFrame):
                 status                  # Coluna 9: Status
             ))
 
-        # Atualiza o estado dos botões de navegação
         self.btn_anterior.configure(state="normal" if self.pagina_atual > 0 else "disabled")
         self.btn_proximo.configure(state="normal" if fim < self.total_agendamentos else "disabled")
 
@@ -185,7 +166,6 @@ class VisualizarAdminFrame(ctk.CTkFrame):
             confirmation = messagebox.askyesno("Confirmar Cancelamento", "Tem certeza que deseja cancelar este agendamento?")
             if confirmation:
                 agendamento_id = self.get_agendamento_id()
-                # Realiza o cancelamento no banco de dados
                 self.agendamento_repository.cancelar_agendamento(agendamento_id)
                 messagebox.showinfo("Sucesso", "Agendamento cancelado com sucesso!")
                 self.atualizar_tabela()

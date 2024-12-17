@@ -6,7 +6,7 @@ from model.models import AgendamentoModel as Agendamento
 from view.editar_agendamento_view import Editar
 from datetime import datetime
 
-class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
+class VisualizarFrame(ctk.CTkFrame):
     def __init__(self, master, agendamento_repository, usuario_id, filtro):
         super().__init__(master)
         self.agendamento_repository = agendamento_repository
@@ -18,16 +18,14 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
 
         
         self.pesquisa_frame = ctk.CTkFrame(self)
-        self.pesquisa_frame.pack(pady=(20, 10))  # Adiciona algum espaço ao redor
+        self.pesquisa_frame.pack(pady=(20, 10))
 
 
         self.entry_pesquisa = ctk.CTkEntry(self.pesquisa_frame, placeholder_text="Digite sua pesquisa aqui", width=300)
-        self.entry_pesquisa.pack(side="left", padx=(20, 10))  # Ajusta o espaçamento do entry
-                # Configuração da Treeview
-        self.btn_filtro = ctk.CTkButton(self.pesquisa_frame, text="Pesquisa", command=self.filtro_de_pesquisa)
-        self.btn_filtro.pack(side="left", padx=(10, 20))  # Ajusta o espaçamento do botão
+        self.entry_pesquisa.pack(side="left", padx=(20, 10))
 
-        # Campo de entrada para pesquisa
+        self.btn_filtro = ctk.CTkButton(self.pesquisa_frame, text="Pesquisa", command=self.filtro_de_pesquisa)
+        self.btn_filtro.pack(side="left", padx=(10, 20))
         
         self.tree = ttk.Treeview(self, columns=("id", "nome", "data", "horario", "local", "descricao", "status"), show='headings', height=42)
 
@@ -47,18 +45,12 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         self.tree.column("horario", width=100)
         self.tree.column("local", width=150)
         self.tree.column("descricao", width=200)
-        self.tree.column("status", width=200) #Adicionei coluna status
+        self.tree.column("status", width=200)
 
         self.tree.pack(pady=20, fill="both", expand=False)
 
-        # Frame para os botões
-        # Frame para os botões
         self.botao_frame = ctk.CTkFrame(self)
         self.botao_frame.pack(pady=10)
-
-        # Botão de pesquisa (movido para a parte superior)
-        # self.btn_filtro = ctk.CTkButton(self, text="Pesquisa", command=self.filtro_de_pesquisa)
-        # self.btn_filtro.pack(side="top", padx=(20, 30), pady=(20, 10))  # Adicionei margens para espaçamento
 
         self.btn_anterior = ctk.CTkButton(self.botao_frame, text="Anterior", command=self.pagina_anterior)
         self.btn_anterior.pack(side="left", padx=(0, 10))
@@ -78,26 +70,19 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
         self.btn_cancelar = ctk.CTkButton(self.botao_frame, text="Cancelar Agendamento", command=self.cancelar_agendamento)
         self.btn_cancelar.pack(side="left", padx=(10, 20))
 
-                # Chama a atualização da tabela após os botões terem sido criados
         self.atualizar_tabela()
 
-        # Inicializa a direção de ordenação
+
         self.ordenacao_direcao = {coluna: True for coluna in ["id", "nome", "data", "horario", "local", "descricao", "status"]}
 
     def atualizar_tabela(self, agendamentos=None):
-        """Atualiza a tabela de agendamentos com os dados mais recentes."""
-        # Limpa a tabela antes de adicionar novos dados
         for row in self.tree.get_children():
             self.tree.delete(row)
-
-        # Obtém a lista completa de agendamentos, se não for fornecida
         if agendamentos is None:
             agendamentos = self.agendamento_repository.listar_agendamentos_por_usuario(self.usuario_id)
             
-
         self.total_agendamentos = len(agendamentos)
 
-        # Calcula os índices para a página atual
         inicio = self.pagina_atual * self.itens_por_pagina
         fim = inicio + self.itens_por_pagina
         agendamentos_pagina = agendamentos[inicio:fim]
@@ -108,57 +93,41 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
                     data_agendamento = datetime.strptime(agendamento.data, "%Y-%m-%d").date() 
                 except ValueError:
                     data_agendamento = datetime.strptime(agendamento.data, "%d-%m-%Y").date() 
-            elif isinstance(agendamento.data, datetime):  # Se for datetime, converte para date
+            elif isinstance(agendamento.data, datetime):
                data_agendamento = agendamento.data.date()
             else:
                 data_agendamento = agendamento.data 
 
-            # Formata a data corretamente como string
-            data_formatada = data_agendamento.strftime("%d-%m-%Y")  # Formato dd-mm-aaaa
+            data_formatada = data_agendamento.strftime("%d-%m-%Y")
             horario_formatado = agendamento.horario if isinstance(agendamento.horario, str) else agendamento.horario.strftime("%H:%M")
 
             data_atual = datetime.now().date()
             tags = ("Evento proximo",) if data_atual <= data_agendamento <= (data_atual + timedelta(days=2)) else ()
             
             self.tree.tag_configure("Evento proximo", foreground="red", font=("arial", 10, "bold"))
-
-            # Para o horário, você deve verificar da mesma forma
             if isinstance(agendamento.horario, str):
-                horario_formatado = agendamento.horario  # Presume que já é uma string no formato correto
+                horario_formatado = agendamento.horario
             else:
-                horario_formatado = agendamento.horario.strftime("%H:%M")  # Formata o horário
+                horario_formatado = agendamento.horario.strftime("%H:%M")
 
-            # Insere os dados formatados na tabela, incluindo a descrição
             self.tree.insert('', 'end', values=(agendamento.id, agendamento.nome, data_formatada, horario_formatado, agendamento.local, agendamento.descricao, agendamento.status or "N/A"), tags=tags)
 
-        # Atualiza o estado dos botões de navegação
         self.btn_anterior.configure(state="normal" if self.pagina_atual > 0 else "disabled")
         self.btn_proximo.configure(state="normal" if fim < self.total_agendamentos else "disabled")
 
     def ordenar(self, coluna):
-        """Ordena a Treeview com base na coluna selecionada."""
-        # Alterna a direção de ordenação
         self.ordenacao_direcao[coluna] = not self.ordenacao_direcao[coluna]
         
-
-        # Obtém a lista completa de agendamentos
         agendamentos = self.agendamento_repository.listar_agendamentos_por_usuario(self.usuario_id)
-
-        # Verifica o tipo de coluna e define a chave de ordenação
         if coluna == "data":
-            # Para data, verifica se já é um objeto datetime.date
             agendamentos.sort(key=lambda x: x.data if isinstance(x.data, datetime) else datetime.strptime(x.data, "%d-%m-%Y"), reverse=self.ordenacao_direcao[coluna])
         elif coluna == "horario":
-            # Para horário, converte para um objeto de hora
             agendamentos.sort(key=lambda x: datetime.strptime(x.horario, "%H:%M"), reverse=self.ordenacao_direcao[coluna])
         else:
-            # Para outras colunas, utiliza o atributo diretamente
             agendamentos.sort(key=lambda x: getattr(x, coluna), reverse=self.ordenacao_direcao[coluna])
-
-        # Atualiza a tabela com a lista ordenada
         self.total_agendamentos = len(agendamentos)
-        self.pagina_atual = 0  # Reseta para a primeira página após a ordenação
-        self.atualizar_tabela(agendamentos)  # Atualiza a tabela com os agendamentos ordenados
+        self.pagina_atual = 0
+        self.atualizar_tabela(agendamentos)
 
     def editar_agendamento(self):
         selected_item = self.tree.selection()
@@ -243,14 +212,9 @@ class VisualizarFrame(ctk.CTkFrame):  # visualização em treeview
     def filtro_de_pesquisa(self):
         termo_pesquisa = self.entry_pesquisa.get()
         if termo_pesquisa:
-            # Aqui você deve chamar o repositório para obter os resultados filtrados.
             resultados = self.agendamento_repository.obter_agendamentos_por_termo(termo_pesquisa)
-            
-            # Limpe a treeview antes de inserir novos resultados
             for item in self.tree.get_children():
                 self.tree.delete(item)
-            
-            # Popule a treeview com os resultados filtrados
             for agendamento in resultados:
                 self.tree.insert("", "end", values=(agendamento.id, agendamento.nome, agendamento.data, 
                                                     agendamento.horario, agendamento.local, 

@@ -36,12 +36,10 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
 
         self.label_horario = ctk.CTkLabel(self.frame_interno, text=constante.get_texto_horario())
         self.label_horario.grid(row=3, column=0, padx=10, pady=(10, 5), sticky="w")
-        
-        # Frame para organizar os comboboxes do horário horizontalmente
+
         self.frame_horario = ctk.CTkFrame(self.frame_interno, fg_color='transparent')
         self.frame_horario.grid(row=4, column=0, padx=10, pady=5)
 
-        # Combobox para horas (0-23)
         self.horas = [f"{i:02d}" for i in range(24)]
         self.combo_horas = ctk.CTkComboBox(
             self.frame_horario, 
@@ -57,7 +55,6 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
         self.combo_horas.grid(row=0, column=0, padx=2)
         self.combo_horas.set("00")
 
-        # Combobox para minutos (00-59)
         self.minutos = [f"{i:02d}" for i in range(60)]
         self.combo_minutos = ctk.CTkComboBox(
             self.frame_horario, 
@@ -107,7 +104,6 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
         nome = self.entrada_nome.get().strip()
         data = self.calendario.get_date().strip()
         
-        # Nova lógica simplificada para obter o horário dos comboboxes
         horas = int(self.combo_horas.get())
         minutos = int(self.combo_minutos.get())
         horario = f"{horas:02d}:{minutos:02d}"
@@ -118,8 +114,7 @@ class CriarAgendamentoFrame(ctk.CTkFrame):
         if not all([nome, data, horario, local]):
             messagebox.showerror(constante.get_erro(), constante.get_mensagem_erro_campo_obrigatorio())
             return
-        
-        # Verifica o formato do horário
+
         if not re.match(r'^(?:[01]\d|2[0-3]):[0-5]\d$', horario):
             messagebox.showerror(constante.get_erro(), constante.get_mensagem_erro_formato_horario(), parent=self)
             return

@@ -16,29 +16,24 @@ class RegisterView(ctk.CTkFrame):
         self.label = ctk.CTkLabel(self, text="Registrar Novo Usuário", font=ctk.CTkFont(size=20, weight="bold"))
         self.label.pack(pady=(160, 20))
 
-        # Criação de um frame para o formulário, centralizando ele
         form_frame = ctk.CTkFrame(self, fg_color="transparent")
-        form_frame.pack(pady=40, padx=20, anchor="center")  # Centraliza o frame no meio da tela
+        form_frame.pack(pady=40, padx=20, anchor="center")
 
-        # Nome
         self.nome_label = ctk.CTkLabel(form_frame, text="Nome:", font=ctk.CTkFont(size=16, weight="bold"))
         self.nome_label.grid(row=0, column=0, padx=(0, 25), pady=5, sticky="e")
         self.nome_entry = ctk.CTkEntry(form_frame, placeholder_text="Digite seu nome", width=300, height=40)
         self.nome_entry.grid(row=0, column=1, pady=5, sticky="w")
 
-        # Senha
         self.senha_label = ctk.CTkLabel(form_frame, text="Senha:", font=ctk.CTkFont(size=16, weight="bold"))
         self.senha_label.grid(row=1, column=0, padx=(0, 25), pady=5, sticky="e")
         self.senha_entry = ctk.CTkEntry(form_frame, placeholder_text="Digite sua senha", show="*", width=300, height=40)
         self.senha_entry.grid(row=1, column=1, pady=5, sticky="w")
 
-        # Email
         self.email_label = ctk.CTkLabel(form_frame, text="Email:", font=ctk.CTkFont(size=16, weight="bold"))
         self.email_label.grid(row=2, column=0, padx=(0, 25), pady=5, sticky="e")
         self.email_entry = ctk.CTkEntry(form_frame, placeholder_text="Digite seu email", width=300, height=40)
         self.email_entry.grid(row=2, column=1, pady=5, sticky="w")
 
-        # Data de Nascimento com botão de calendário
         self.data_nasc_label = ctk.CTkLabel(form_frame, text="Data de Nascimento:", font=ctk.CTkFont(size=16, weight="bold"))
         self.data_nasc_label.grid(row=3, column=0, padx=(0, 25), pady=5, sticky="e")
         self.data_nasc_button = ctk.CTkButton(form_frame, text="Selecionar Data", command=self.open_calendar, width=300, height=40)
@@ -47,28 +42,23 @@ class RegisterView(ctk.CTkFrame):
         self.data_nasc_display = ctk.CTkLabel(form_frame, textvariable=self.data_nasc_var)
         self.data_nasc_display.grid(row=4, column=1, padx=10, pady=5, sticky="w")
 
-        # Cidade
         self.cidade_label = ctk.CTkLabel(form_frame, text="Cidade:", font=ctk.CTkFont(size=16, weight="bold"))
         self.cidade_label.grid(row=5, column=0, padx=(0, 25), pady=5, sticky="e")
         self.cidade_entry = ctk.CTkEntry(form_frame, placeholder_text="Digite sua cidade", width=300, height=40)
         self.cidade_entry.grid(row=5, column=1, pady=5, sticky="w")
 
-        # Sexo
         self.sexo_label = ctk.CTkLabel(form_frame, text="Sexo:", font=ctk.CTkFont(size=16, weight="bold"))
         self.sexo_label.grid(row=6, column=0, padx=(0, 25), pady=5, sticky="e")
         self.sexo_entry = ctk.CTkComboBox(form_frame, values=["Masculino", "Feminino"], width=300, height=40)
         self.sexo_entry.grid(row=6, column=1, pady=5, sticky="w")
 
-        # Aceitar termos
         self.termos_var = tk.BooleanVar()
         self.termos_check = ctk.CTkCheckBox(form_frame, text="Aceito os termos e condições", variable=self.termos_var)
         self.termos_check.grid(row=7, columnspan=2, pady=10)
 
-        # Botão de registro
         self.register_button = ctk.CTkButton(self, text="Registrar", command=self.register, width=300, height=40)
         self.register_button.pack(pady=20)
 
-        # Botão de voltar
         self.back_button = ctk.CTkButton(self, text="Voltar", command=self.voltar, width=300, height=40)
         self.back_button.pack(pady=10)
 
@@ -80,7 +70,7 @@ class RegisterView(ctk.CTkFrame):
             year=2023,
             month=10,
             day=5,
-            date_pattern="dd/mm/yyyy"  # Configuração do formato
+            date_pattern="dd/mm/yyyy"
         )
         self.calendar.pack(pady=20)
 
@@ -91,7 +81,6 @@ class RegisterView(ctk.CTkFrame):
         selected_date = self.calendar.get_date()
         try:
             valid_date = datetime.strptime(selected_date, "%d/%m/%Y")
-            # Verifica se a data selecionada é no futuro
             if valid_date.date() > datetime.now().date():
                 messagebox.showerror(constante.get_erro(), "A data de nascimento não pode ser no futuro.")
                 return
@@ -112,12 +101,10 @@ class RegisterView(ctk.CTkFrame):
         sexo = self.sexo_entry.get()
         tipo = "padrão"
 
-        # Verifica se todos os campos estão preenchidos
         if not all([nome, senha, email, data_nasc, cidade, sexo]):
             messagebox.showerror(constante.get_erro(), "Todos os campos são obrigatórios. Por favor, preencha todos os campos.")
             return
 
-        # Verifica se o e-mail já está cadastrado
         emails_cadastrados = self.controller.obter_emails_cadastrados()
         if email in emails_cadastrados:
             messagebox.showerror(constante.get_erro(), "Erro ao registrar usuário: o e-mail já está em uso.")

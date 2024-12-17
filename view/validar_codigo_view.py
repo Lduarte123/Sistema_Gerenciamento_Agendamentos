@@ -13,7 +13,7 @@ class ValidarCodigoWindow(ctk.CTkToplevel):
         x = (screen_width // 2) - (300 // 2)
         y = (screen_height // 2) - (150 // 2)
 
-        self.geometry(f"300x150+{x}+{y}")           # CENTRALIZA A NOVA JANELA NA TELA
+        self.geometry(f"300x150+{x}+{y}")
 
         self.label = ctk.CTkLabel(self, text=message)
         self.label.pack(pady=(20, 5))
