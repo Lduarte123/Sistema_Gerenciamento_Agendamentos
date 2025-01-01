@@ -62,7 +62,7 @@ pip install CustomTkinter tkcalendar Pillow psycopg2 SQLAlchemy
 
 4. **Execute o script principal:**
    ```bash
-   python app.py
+   python main.py
    ```
 
 ---
