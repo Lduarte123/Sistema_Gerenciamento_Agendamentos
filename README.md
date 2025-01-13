@@ -83,7 +83,7 @@ pip install CustomTkinter tkcalendar Pillow psycopg2 SQLAlchemy
 ### Colaboração
 
 Agradecemos as contribuições dos seguintes colaboradores:
-- **Marcos Vitor** - [victorlima11](https://github.com/victorlima11)
+- **Marcos Victor** - [victorlima11](https://github.com/victorlima11)
 - **Cauã Enzo** - [cauaenzo](https://github.com/cauaenzo)
 - **Lucas Duarte** - [Lduarte123](https://github.com/Lduarte123/)
 - **João Lucas** - [Joaolucasos169](https://github.com/Joaolucasos169)
